@@ -25,10 +25,8 @@ def mock_registry(mocker: MockerFixture) -> None:
     fake_winreg.load_fake_registry(fake_registry)
 
     try:
-        import winreg
-
-        mocker.patch(winreg, "OpenKey", fake_winreg.OpenKey)  # type: ignore
-        mocker.patch(winreg, "EnumValue", fake_winreg.EnumValue)  # type: ignore
+        mocker.patch("winreg.OpenKey", fake_winreg.OpenKey)
+        mocker.patch("winreg.EnumValue", fake_winreg.EnumValue)
     except ImportError:
         pass
 
