@@ -18,6 +18,9 @@ Changelog = "https://github.com/bhrevol/afesta-tools/releases"
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 click = ">=8.0.1"
+loguru = "^0.5.3"
+funcy = "^1.17"
+fake-winreg = "^1.6.0"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"
@@ -43,6 +46,8 @@ sphinx-autobuild = ">=2021.3.14"
 sphinx-click = ">=3.0.2"
 typeguard = ">=2.13.3"
 xdoctest = {extras = ["colors"], version = ">=0.15.10"}
+pytest-mock = "^3.6.1"
+fake-winreg = "^1.6.0"
 
 [tool.poetry.scripts]
 afesta-tools = "afesta_tools.__main__:main"
@@ -58,6 +63,7 @@ source = ["afesta_tools", "tests"]
 [tool.coverage.report]
 show_missing = true
 fail_under = 100
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", "@overload"]
 
 [tool.isort]
 profile = "black"
