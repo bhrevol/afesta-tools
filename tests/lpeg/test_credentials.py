@@ -13,6 +13,7 @@ TEST_UID = "foo"
 TEST_ST = "123456"
 TEST_MID = "jtCsTw2kdWzs4yYJhJifAVVrBbCrTJR62SH53uU5PlErtuqyAndDIWzoVFXVTyl9"
 TEST_PID = "0001234567abcdef123456"
+TEST_CREDENTIALS = FourDCredentials(TEST_UID, TEST_ST, TEST_MID, TEST_PID)
 
 
 @pytest.fixture
@@ -79,8 +80,4 @@ def test_4d_get_default(mocker: MockerFixture) -> None:
         },
     )
     mocker.patch.object(FourDCredentials, "_get_user_pid", return_value=TEST_PID)
-    creds = FourDCredentials.get_default()
-    assert creds.uid == TEST_UID
-    assert creds.st == TEST_ST
-    assert creds.mid == TEST_MID
-    assert creds.pid == TEST_PID
+    assert FourDCredentials.get_default() == TEST_CREDENTIALS
