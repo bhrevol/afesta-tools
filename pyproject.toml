@@ -21,6 +21,7 @@ click = ">=8.0.1"
 loguru = "^0.5.3"
 funcy = "^1.17"
 fake-winreg = "^1.6.0"
+tqdm = "^4.62.3"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"

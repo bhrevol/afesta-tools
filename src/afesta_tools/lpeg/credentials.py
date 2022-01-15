@@ -35,7 +35,7 @@ class BaseCredentials:
     pid: str
 
     @classmethod
-    def get_default(cls) -> "BaseCredentials":
+    def get_default(cls) -> "BaseCredentials":  # pragma: no cover
         """Lookup and return default credentials for the current user.
 
         Raises:
