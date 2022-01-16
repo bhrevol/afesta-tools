@@ -17,9 +17,12 @@ from ..exceptions import AuthenticationError
 from ..progress import ProgressCallback
 from ..types import PathLike
 from .credentials import BaseCredentials
+from .credentials import FourDCredentials
 
 
 AP_STATUS_CHK_URL = "https://www.lpeg.jp/manage/ap_status_chk.php"
+AP_LOGIN_URL = "https://www.lpeg.jp/manage/ap_login.php"
+AP_REG_URL = "http://www.lpeg.jp/manage/ap_reg.php"
 DL_URL = "https://lpeg.jp/h/"
 VCS_DL_URL = "https://data.lpeg.jp/ap_vcs_dl.php"
 
@@ -222,6 +225,56 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
         headers = {"Accept-Encoding": "gzip, identity"}
         return await self._get(VCS_DL_URL, params=params, headers=headers)
 
+    async def register_player(
+        self,
+        username: str,
+        password: str,
+    ) -> BaseCredentials:
+        """Login to LPEG and register as new VR-capable player.
+
+        Arguments:
+            username: Afesta/LPEG login username.
+            password: Password for `username` account.
+
+        Note:
+            `password` will not be saved. Only `username` and API tokens are
+            saved in credentials.
+
+        Returns:
+            Newly registered credentials.
+
+        Raises:
+            AuthenticationError: An authentication error occured.
+        """
+        device_id = BaseCredentials.get_device_id()
+        try:
+            resp = await self._get(AP_REG_URL, params={"pid": device_id})
+            data = await resp.json()
+            pid = data["mp_no"]
+        except (aiohttp.ClientError, KeyError) as exc:
+            raise AuthenticationError("Player registration failed.") from exc
+        try:
+            resp = await self._post(
+                AP_LOGIN_URL,
+                data={
+                    "uid": username,
+                    "pass": password,
+                    "pid": pid,
+                    "type": "dpvr",
+                },
+            )
+            data = (await resp.json()).get("data", {})
+            mid = data["mid"]
+            st = data["st"]
+        except (aiohttp.ClientError, KeyError) as exc:
+            raise AuthenticationError("Login failed.") from exc
+        self.creds = self.new_credentials(uid=username, st=st, mid=mid, pid=pid)
+        return self.creds
+
+    @abstractmethod
+    def new_credentials(self, *args: Any, **kwargs: Any) -> BaseCredentials:
+        """Return a new credentials instance."""
+
 
 class FourDClient(BaseLpegClient):
     """4D Media Player client.
@@ -236,3 +289,7 @@ class FourDClient(BaseLpegClient):
     def user_agent(self) -> str:
         """Return the HTTP User-Agent for this client."""
         return "BestHTTP 1.12.3"  # UA as of 4D Media Player 2.0.1
+
+    def new_credentials(self, *args: Any, **kwargs: Any) -> FourDCredentials:
+        """Return a new credentials instance."""
+        return FourDCredentials(*args, **kwargs)

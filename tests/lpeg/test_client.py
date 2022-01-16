@@ -14,10 +14,13 @@ from pytest_mock import MockerFixture
 from afesta_tools.exceptions import AuthenticationError
 from afesta_tools.lpeg import FourDClient
 from afesta_tools.lpeg import VideoQuality
+from afesta_tools.lpeg.client import AP_LOGIN_URL
+from afesta_tools.lpeg.client import AP_REG_URL
 from afesta_tools.lpeg.client import AP_STATUS_CHK_URL
 from afesta_tools.lpeg.client import DL_URL
 from afesta_tools.lpeg.client import VCS_DL_URL
 from afesta_tools.lpeg.client import BaseLpegClient
+from afesta_tools.lpeg.credentials import BaseCredentials
 from afesta_tools.progress import ProgressCallback
 
 from .test_credentials import TEST_CREDENTIALS
@@ -153,3 +156,47 @@ async def test_download_vcz(
     set_desc.assert_called_once_with(f"Downloading {output_path}")
     set_total.assert_called_once_with(10)
     update.assert_called_with(10)
+
+
+async def test_register_player(
+    mocker: MockerFixture, client_noauth: BaseLpegClient
+) -> None:
+    """Should register with default creds."""
+    device_id = BaseCredentials.get_device_id()
+    with aioresponses() as m:  # type: ignore
+        url = merge_params(AP_REG_URL, params={"pid": device_id})
+        m.get(url, payload={"result": -1})
+        with pytest.raises(AuthenticationError):
+            await client_noauth.register_player(TEST_CREDENTIALS.uid, "password")
+    with aioresponses() as m:  # type: ignore
+        url = merge_params(AP_REG_URL, params={"pid": device_id})
+        m.get(url, payload={"result": 0, "mp_no": TEST_CREDENTIALS.pid})
+        m.post(AP_LOGIN_URL, payload={"result": -1})
+        with pytest.raises(AuthenticationError):
+            await client_noauth.register_player(TEST_CREDENTIALS.uid, "password")
+    login_payload = {
+        "uid": TEST_CREDENTIALS.uid,
+        "pass": "password",
+        "pid": TEST_CREDENTIALS.pid,
+        "type": "dpvr",
+    }
+    get = mocker.spy(client_noauth._session, "get")
+    post = mocker.spy(client_noauth._session, "post")
+    with aioresponses() as m:  # type: ignore
+        url = merge_params(AP_REG_URL, params={"pid": device_id})
+        m.get(url, payload={"result": 0, "mp_no": TEST_CREDENTIALS.pid})
+        m.post(
+            AP_LOGIN_URL,
+            payload={
+                "data": {
+                    "mid": TEST_CREDENTIALS.mid,
+                    "st": TEST_CREDENTIALS.st,
+                },
+                "result": 1,
+            },
+        )
+        creds = await client_noauth.register_player(TEST_CREDENTIALS.uid, "password")
+    get.assert_called_once_with(AP_REG_URL, params={"pid": device_id})
+    post.assert_called_once_with(AP_LOGIN_URL, data=login_payload)
+    assert creds == TEST_CREDENTIALS
+    assert client_noauth.creds == TEST_CREDENTIALS
