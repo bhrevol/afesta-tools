@@ -1,6 +1,8 @@
 """LPEG API credentials."""
+import hashlib
 import os
 import platform
+import uuid
 from dataclasses import dataclass
 from typing import ClassVar
 from typing import Dict
@@ -24,9 +26,7 @@ class BaseCredentials:
         uid: LPEG API user ID (login username).
         st: LPEG API st token (6-digit numeric string).
         mid: LPEG API mid (64-character alphanumeric string).
-        pid: LPEG API player ID (22-character alphanumeric string).
-            API PID consists of 10-digit token prepended to 12-character
-            alphanumeric player ID which.
+        pid: LPEG API player ID (alphanumeric player ID).
     """
 
     uid: str
@@ -43,6 +43,21 @@ class BaseCredentials:
                 could be found.
         """
         raise NoCredentialsError
+
+    @classmethod
+    def get_device_id(cls) -> "str":
+        """Return a device ID suitable for generating a player ID (`pid`).
+
+        LPEG player ID's consist of a a server token prepended to a unique
+        device ID. Device ID generation is dependent on platform and client,
+        but is comparable to ``UnityEngine.SystemInfo.deviceUniqueIdentifier``.
+
+        Returns:
+            Unique (hardware based) device ID roughly equivalent to an LPEG
+            desktop player device ID.
+        """
+        hardware_id = uuid.getnode().to_bytes(length=6, byteorder="big")
+        return hashlib.blake2b(hardware_id, digest_size=6).digest().hex()
 
 
 @dataclass
