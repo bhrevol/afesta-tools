@@ -617,7 +617,7 @@ flake8-polyfill = ">=1.0.2,<2"
 name = "platformdirs"
 version = "2.4.1"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -1191,7 +1191,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<4.0"
-content-hash = "28992a0f2115f44f418f595dc5782c1c3b7614e6160f89bdb42a44caf996e43b"
+content-hash = "d628aed14e1f1fdac39e559209f505ba4b5f54b73fbb7645231f088bfed1a07a"
 
 [metadata.files]
 aiohttp = [
