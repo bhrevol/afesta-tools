@@ -2,12 +2,15 @@
 from pathlib import Path
 from typing import List
 from typing import Optional
+from unittest.mock import ANY
+from unittest.mock import call
 
 import pytest
 from click.testing import CliRunner
 from pytest_mock import MockerFixture
 
 from afesta_tools import __main__
+from afesta_tools.config import dump_credentials
 from afesta_tools.lpeg.client import FourDClient
 
 from .lpeg.test_credentials import TEST_CREDENTIALS
@@ -54,8 +57,6 @@ def test_already_logged_in(
     runner: CliRunner, config_dir: Path, mocker: MockerFixture
 ) -> None:
     """Should not login unless --force is provided."""
-    from afesta_tools.config import dump_credentials
-
     register_player = mocker.patch.object(
         FourDClient, "register_player", return_value=TEST_CREDENTIALS
     )
@@ -67,3 +68,26 @@ def test_already_logged_in(
     result = runner.invoke(__main__.login, ["-u", "username", "-p", "password", "-f"])
     assert "Logged into Afesta" in result.output
     register_player.assert_called_with("username", "password")
+
+
+def test_dl(
+    runner: CliRunner, mocker: MockerFixture, config_dir: Path, wdir: Path
+) -> None:
+    """Should download specified videos."""
+    download_video = mocker.patch.object(FourDClient, "download_video")
+    dump_credentials(TEST_CREDENTIALS)
+    runner.invoke(__main__.dl, ["foo", "bar"])
+    download_video.assert_has_calls(
+        [call("foo", progress=ANY), call("bar", progress=ANY)],
+        any_order=True,
+    )
+
+
+def test_dl_no_login(
+    runner: CliRunner, mocker: MockerFixture, config_dir: Path
+) -> None:
+    """Should fail to download."""
+    download_video = mocker.patch.object(FourDClient, "download_video")
+    result = runner.invoke(__main__.dl)
+    assert "No credentials found" in result.output
+    download_video.assert_not_called()

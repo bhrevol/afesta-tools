@@ -7,6 +7,8 @@ Afesta Tools
 
 |pre-commit| |Black|
 
+Library and tools for AFesta.tv
+
 .. |PyPI| image:: https://img.shields.io/pypi/v/afesta-tools.svg
    :target: https://pypi.org/project/afesta-tools/
    :alt: PyPI
@@ -39,13 +41,18 @@ Afesta Tools
 Features
 --------
 
-* TODO
+* Login to Afesta/LPEG API and register as a new player/client
+* Re-use existing 4D Media Player installation + login credentials when
+  available (Windows only)
+* Download Afesta videos via CLI (requires valid account and appropriate
+  purchases/permissions)
 
 
 Requirements
 ------------
 
-* TODO
+* Python 3.8+
+* Valid Afesta account
 
 
 Installation
@@ -60,6 +67,20 @@ You can install *Afesta Tools* via pip_ from PyPI_:
 
 Usage
 -----
+
+Login to Afesta via CLI:
+
+.. code:: console
+
+    $ afesta login
+    Afesta username: username
+    Afesta password:
+
+Download videos:
+
+.. code:: console
+
+    $ afesta dl m1234-0000 m1234-0000_1 m1234-0000_2 m1234-0000_3
 
 Please see the `Command-line Reference <Usage_>`_ for details.
 

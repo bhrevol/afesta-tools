@@ -1,18 +1,21 @@
 """Command-line interface."""
 import asyncio
 from typing import Optional
+from typing import Sequence
 from typing import cast
 
 import click
+from tqdm.asyncio import tqdm
 
-from .config import APP_NAME
 from .config import dump_credentials
 from .config import load_credentials
 from .exceptions import AfestaError
 from .exceptions import NoCredentialsError
+from .lpeg.client import BaseLpegClient
 from .lpeg.client import FourDClient
 from .lpeg.credentials import BaseCredentials
 from .lpeg.credentials import FourDCredentials
+from .progress import ProgressCallback
 
 
 @click.group()
@@ -75,7 +78,7 @@ def login(
         creds = asyncio.run(_login(username, password))
         dump_credentials(creds)
         click.echo(f"Logged into Afesta as {creds.uid}")
-    except AfestaError as exc:
+    except AfestaError as exc:  # pragma: no cover
         click.echo(f"Login failed: {exc}", err=True)
         return 1
     return 0
@@ -86,5 +89,42 @@ async def _login(username: str, password: str) -> BaseCredentials:
         return await client.register_player(username, password)
 
 
+@cli.command()
+@click.argument("video_id", nargs=-1)
+def dl(video_id: Sequence[str]) -> int:  # noqa: DAR101
+    """Download an afesta video.
+
+    Requires an account with permissions to download the video (either via
+    standalone purchase or monthly subscription DL benefits).
+
+    If 4D Media Player is installed and the current user is logged in via the
+    player, the existing 4D Media Player credentials will be used. Otherwise,
+    the 'afesta login' command must be run before downloading.
+    """
+    try:
+        creds = _load_credentials()
+    except NoCredentialsError:
+        click.echo("No credentials found. Did you forget to run 'afesta login'?")
+    try:
+        asyncio.run(_dl(video_id, creds))
+    except AfestaError as exc:  # pragma: no cover
+        click.echo(f"Download failed: {exc}", err=True)
+        return 1
+    return 0
+
+
+async def _dl(video_ids: Sequence[str], creds: BaseCredentials) -> None:
+    async with FourDClient(creds) as client:
+        await asyncio.gather(*(_dl_one(client, video_id) for video_id in video_ids))
+
+
+async def _dl_one(client: BaseLpegClient, video_id: str) -> None:
+    with tqdm(unit="B", unit_scale=True) as pbar:
+        await client.download_video(
+            video_id,
+            progress=ProgressCallback(pbar),
+        )
+
+
 if __name__ == "__main__":
-    cli(prog_name=APP_NAME)  # pragma: no cover
+    cli(prog_name="afesta")  # pragma: no cover
