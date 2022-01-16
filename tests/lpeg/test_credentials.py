@@ -6,7 +6,8 @@ import pytest
 from pytest_mock import MockerFixture
 
 from afesta_tools.exceptions import NoCredentialsError
-from afesta_tools.lpeg import FourDCredentials
+from afesta_tools.lpeg.credentials import BaseCredentials
+from afesta_tools.lpeg.credentials import FourDCredentials
 
 
 TEST_UID = "foo"
@@ -81,3 +82,15 @@ def test_4d_get_default(mocker: MockerFixture) -> None:
     )
     mocker.patch.object(FourDCredentials, "_get_user_pid", return_value=TEST_PID)
     assert FourDCredentials.get_default() == TEST_CREDENTIALS
+
+
+def test_equality() -> None:
+    """Subclass equality should succeed."""
+    base = BaseCredentials(TEST_UID, TEST_ST, TEST_MID, TEST_PID)
+    sub = FourDCredentials(TEST_UID, TEST_ST, TEST_MID, TEST_PID)
+
+    assert base == BaseCredentials(TEST_UID, TEST_ST, TEST_MID, TEST_PID)
+    assert sub == FourDCredentials(TEST_UID, TEST_ST, TEST_MID, TEST_PID)
+    assert base == sub
+    assert base != FourDCredentials("bar", TEST_ST, TEST_MID, TEST_PID)
+    assert base != 123

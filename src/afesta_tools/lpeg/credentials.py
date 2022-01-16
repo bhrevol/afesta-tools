@@ -34,6 +34,16 @@ class BaseCredentials:
     mid: str
     pid: str
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, BaseCredentials):
+            return False
+        return (
+            self.uid == other.uid
+            and self.st == other.st
+            and self.mid == other.mid
+            and self.pid == other.pid
+        )
+
     @classmethod
     def get_default(cls) -> "BaseCredentials":  # pragma: no cover
         """Lookup and return default credentials for the current user.

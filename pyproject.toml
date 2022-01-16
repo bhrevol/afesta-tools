@@ -23,6 +23,7 @@ funcy = "^1.17"
 fake-winreg = "^1.6.0"
 tqdm = "^4.62.3"
 aiohttp = "^3.8.1"
+platformdirs = "^2.4.1"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"
