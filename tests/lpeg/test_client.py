@@ -29,14 +29,14 @@ from .test_credentials import TEST_CREDENTIALS
 TEST_VIDEO_CODE = "st1234"
 
 
-@pytest_asyncio.fixture  # type: ignore
+@pytest_asyncio.fixture
 async def client() -> AsyncGenerator[BaseLpegClient, None]:
     """Fixture to generate a 4D client with test credentials."""
     async with FourDClient(TEST_CREDENTIALS) as client:
         yield client
 
 
-@pytest_asyncio.fixture  # type: ignore
+@pytest_asyncio.fixture
 async def client_noauth() -> AsyncGenerator[BaseLpegClient, None]:
     """Fixture to generate a 4D client with no auth credentials."""
     async with FourDClient() as client:
