@@ -111,7 +111,8 @@ async def test_download_video(
         os.chdir(tmpdir)
         await client.download_video(TEST_VIDEO_CODE, quality=quality, progress=progress)
         os.chdir(cwd)
-    get.assert_called_once_with(DL_URL, params=params)
+    assert client._dl_timeout.total is None
+    get.assert_called_once_with(DL_URL, params=params, timeout=client._dl_timeout)
     assert (Path(tmpdir) / "foo.mp4").read_bytes() == b"1234567890"
     if with_progress:
         set_desc.assert_called_once_with("Downloading foo.mp4")
@@ -150,6 +151,7 @@ async def test_download_vcz(
         VCS_DL_URL,
         params=params,
         headers={"Accept-Encoding": "gzip, identity"},
+        timeout=client._dl_timeout,
     )
     output_path = Path(tmpdir) / "foo.vcz"
     assert output_path.read_bytes() == b"1234567890"
