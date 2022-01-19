@@ -82,6 +82,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
 
     CHUNK_SIZE = 4096
     DEFAULT_VIDEO_QUALITY = VideoQuality.PC_SBS
+    _CLIENT_TIMEOUT = 5 * 60
 
     def __init__(self, creds: Optional[BaseCredentials] = None) -> None:
         """Construct a new client.
@@ -115,6 +116,16 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
     @abstractmethod
     def user_agent(self) -> str:
         """Return the HTTP User-Agent for this client."""
+
+    @property
+    def _dl_timeout(self) -> aiohttp.ClientTimeout:
+        """Return download timeout."""
+        return aiohttp.ClientTimeout(
+            total=None,
+            connect=self._CLIENT_TIMEOUT,
+            sock_connect=self._CLIENT_TIMEOUT,
+            sock_read=None,
+        )
 
     async def _get(self, url: str, **kwargs: Any) -> aiohttp.ClientResponse:
         return await self._session.get(url, **kwargs)
@@ -196,7 +207,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
             "code": code,
             "pid": self.creds.pid,
         }
-        return await self._get(DL_URL, params=params)
+        return await self._get(DL_URL, params=params, timeout=self._dl_timeout)
 
     async def download_vcz(
         self,
@@ -223,7 +234,9 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
             "fid": fid,
         }
         headers = {"Accept-Encoding": "gzip, identity"}
-        return await self._get(VCS_DL_URL, params=params, headers=headers)
+        return await self._get(
+            VCS_DL_URL, params=params, headers=headers, timeout=self._dl_timeout
+        )
 
     async def register_player(
         self,
