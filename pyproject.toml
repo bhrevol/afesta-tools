@@ -24,6 +24,8 @@ fake-winreg = "^1.6.0"
 tqdm = "^4.62.3"
 aiohttp = "^3.8.1"
 platformdirs = "^2.4.1"
+lxml = "^4.7.1"
+a10sa-script = "^0.0.3"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"
@@ -52,6 +54,7 @@ xdoctest = {extras = ["colors"], version = ">=0.15.10"}
 pytest-mock = "^3.6.1"
 pytest-asyncio = "^0.17.0"
 aioresponses = "^0.7.3"
+lxml-stubs = "^0.3.0"
 
 [tool.poetry.scripts]
 afesta = "afesta_tools.__main__:cli"
