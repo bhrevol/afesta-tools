@@ -1287,7 +1287,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<4.0"
-content-hash = "20ab3882967e6e2029a601bc302d9cb1e50ad1050f310a91e7518dccf41d1ca3"
+content-hash = "0e2ea9b712f428969d66ebbe676cc4bf083a5506c3497ee48e216ec6a9628710"
 
 [metadata.files]
 a10sa-script = [
