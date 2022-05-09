@@ -285,7 +285,7 @@ pipenv = ["pipenv"]
 
 [[package]]
 name = "fake-winreg"
-version = "1.6.0"
+version = "1.6.2"
 description = "fake winreg, in order to test registry related functions on linux"
 category = "main"
 optional = false
@@ -792,11 +792,11 @@ diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "pytest"
-version = "6.2.5"
+version = "7.1.2"
 description = "pytest: simple powerful testing with Python"
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 atomicwrites = {version = ">=1.0", markers = "sys_platform == \"win32\""}
@@ -806,10 +806,10 @@ iniconfig = "*"
 packaging = "*"
 pluggy = ">=0.12,<2.0"
 py = ">=1.8.2"
-toml = "*"
+tomli = ">=1.0.0"
 
 [package.extras]
-testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
+testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
 name = "pytest-asyncio"
@@ -1523,13 +1523,13 @@ dparse = [
     {file = "dparse-0.5.1.tar.gz", hash = "sha256:a1b5f169102e1c894f9a7d5ccf6f9402a836a5d24be80a986c7ce9eaed78f367"},
 ]
 fake-winreg = [
-    {file = "fake_winreg-1.6.0-py3-none-any.whl", hash = "sha256:6fe12eb15d3344cfc6e8b176a77129367a1e4bd843bc4aee2097c393adccf7c1"},
-    {file = "fake_winreg-1.6.0-py3.10.egg", hash = "sha256:873aefe94f4ffa270ca80da5690941e2571637c8c0c678711528face1fd753b8"},
-    {file = "fake_winreg-1.6.0-py3.6.egg", hash = "sha256:34a662ff1cc06f937e4078c1042140019daf5d0b8c5714cd49e491822da7655c"},
-    {file = "fake_winreg-1.6.0-py3.7.egg", hash = "sha256:7957cccd3c2c374dab756c0699684ea4afd5fb2a37f00e8115506a438fe21bef"},
-    {file = "fake_winreg-1.6.0-py3.8.egg", hash = "sha256:9183a1cf71d9941e74c63a10578181973c1bec7135984963edb17b323045a8c5"},
-    {file = "fake_winreg-1.6.0-py3.9.egg", hash = "sha256:6b965d45b078031b538c38dd7788974d8a8a7b324689465636580d4f3d9aa1a3"},
-    {file = "fake_winreg-1.6.0.tar.gz", hash = "sha256:cc11618add6b9484d13427f45bc9a2ffb3b38fd44f6eb0e3f646717709eefb69"},
+    {file = "fake_winreg-1.6.2-py3-none-any.whl", hash = "sha256:ffb61bf87712a65450ddebaf4521f8848dd272201284c4b6d764cb7b751d07dc"},
+    {file = "fake_winreg-1.6.2-py3.10.egg", hash = "sha256:93152732bd0642a5acc2648db4c8cf8ea06ce932b907f9da5a83b3ca311fe903"},
+    {file = "fake_winreg-1.6.2-py3.6.egg", hash = "sha256:0c718eea6b1c33b674e712b8efa13d742d8987720c5dc2e3f532c2136f10da5b"},
+    {file = "fake_winreg-1.6.2-py3.7.egg", hash = "sha256:0c3b36ef29915e122dc8786383c1439eb326771e750e7414f911fd43d6174885"},
+    {file = "fake_winreg-1.6.2-py3.8.egg", hash = "sha256:2717a40f88d0db084b74ea4396829a7a3318e29904502a4cad055980e19907f4"},
+    {file = "fake_winreg-1.6.2-py3.9.egg", hash = "sha256:960c9ea7bc3ebe7422d10ff2ae8656dc703295d1b5953464829fc1dd1d43b14d"},
+    {file = "fake_winreg-1.6.2.tar.gz", hash = "sha256:586e19d7662df286e85410cb324c3fba3fc0b94bf647f7823112546aed117a24"},
 ]
 filelock = [
     {file = "filelock-3.4.2-py3-none-any.whl", hash = "sha256:cf0fc6a2f8d26bd900f19bf33915ca70ba4dd8c56903eeb14e1e7a2fd7590146"},
@@ -1968,8 +1968,8 @@ pyparsing = [
     {file = "pyparsing-3.0.7.tar.gz", hash = "sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea"},
 ]
 pytest = [
-    {file = "pytest-6.2.5-py3-none-any.whl", hash = "sha256:7310f8d27bc79ced999e760ca304d69f6ba6c6649c0b60fb0e04a4a77cacc134"},
-    {file = "pytest-6.2.5.tar.gz", hash = "sha256:131b36680866a76e6781d13f101efb86cf674ebb9762eb70d3082b6f29889e89"},
+    {file = "pytest-7.1.2-py3-none-any.whl", hash = "sha256:13d0e3ccfc2b6e26be000cb6568c832ba67ba32e719443bfe725814d3c42433c"},
+    {file = "pytest-7.1.2.tar.gz", hash = "sha256:a06a0425453864a270bc45e71f783330a7428defb4230fb5e6a731fde06ecd45"},
 ]
 pytest-asyncio = [
     {file = "pytest-asyncio-0.17.2.tar.gz", hash = "sha256:6d895b02432c028e6957d25fc936494e78c6305736e785d9fee408b1efbc7ff4"},
