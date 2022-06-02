@@ -519,7 +519,7 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "lib-detect-testenv"
-version = "2.0.0"
+version = "2.0.2.2"
 description = "detects if pytest or doctest or pyrunner on pycharm is running"
 category = "main"
 optional = false
@@ -1660,13 +1660,13 @@ jinja2 = [
     {file = "Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
 ]
 lib-detect-testenv = [
-    {file = "lib_detect_testenv-2.0.0-py3-none-any.whl", hash = "sha256:7720133d49d2982bdd617aa18c07e4958711df45d5ed13720b4a8cb57fc71bc2"},
-    {file = "lib_detect_testenv-2.0.0-py3.10.egg", hash = "sha256:dbe812defff90e84ca91625b9e79794d6732bd65407e41012a9dfb0aed63e290"},
-    {file = "lib_detect_testenv-2.0.0-py3.6.egg", hash = "sha256:88ccd9ae2133e9e42bcac9b0ae4ca15aecae3d316cf127b7f98b1a236babe0fc"},
-    {file = "lib_detect_testenv-2.0.0-py3.7.egg", hash = "sha256:d95d72c15c59dd9321cc58ce8cc7a377cbcea0eedc246e98e45df9cc05fe90ff"},
-    {file = "lib_detect_testenv-2.0.0-py3.8.egg", hash = "sha256:fc08544f49bf005a212d66a3166bb1789c2a8ad0505d2c9150f6c9b17ab39625"},
-    {file = "lib_detect_testenv-2.0.0-py3.9.egg", hash = "sha256:f53b1261bcda1be76806f880ddcc6c0c3e77eb02b5e14367be6da29041ba9c54"},
-    {file = "lib_detect_testenv-2.0.0.tar.gz", hash = "sha256:7fb4f0a6da4707f4c72f31f7420dfeb27b2dd17ab7f85f628f77466025a3e223"},
+    {file = "lib_detect_testenv-2.0.2.2-py3-none-any.whl", hash = "sha256:e2d63e1013b0b408f4366e62ecb3fbb3977e407561c3fc8c75b8701f9a263cc2"},
+    {file = "lib_detect_testenv-2.0.2.2-py3.10.egg", hash = "sha256:21378e07a2027a66036f5e52ff799877cd99334a7c19adae02ec326bc699735a"},
+    {file = "lib_detect_testenv-2.0.2.2-py3.6.egg", hash = "sha256:ef81fb56dc524288b76abcbcdcfd91e47058ac81443b2d360f6ae93c3d06ab40"},
+    {file = "lib_detect_testenv-2.0.2.2-py3.7.egg", hash = "sha256:caa62fdea8a946ada4cef3d4149836017c7d02162a816665a56f7c33581cbe43"},
+    {file = "lib_detect_testenv-2.0.2.2-py3.8.egg", hash = "sha256:28b8d30876416b389447cb003515adba3bc4ea556ca7716ce1fb02faa663feeb"},
+    {file = "lib_detect_testenv-2.0.2.2-py3.9.egg", hash = "sha256:2414807c935331d9e95a1fcf3aa6627b6ac6e346e9c0cef71bff78b662704a9c"},
+    {file = "lib_detect_testenv-2.0.2.2.tar.gz", hash = "sha256:d8c4d5d725250ab7bff2a5bd4a9f628171e0a5372094f8e34d0e76281d4fca6d"},
 ]
 livereload = [
     {file = "livereload-2.6.3.tar.gz", hash = "sha256:776f2f865e59fde56490a56bcc6773b6917366bce0c267c60ee8aaf1a0959869"},
