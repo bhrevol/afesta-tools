@@ -119,12 +119,18 @@ class FourDCredentials(BaseCredentials):
     def _get_user_reg_values(cls) -> Dict[str, str]:
         result: Dict[str, str] = {}
         try:
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, cls.WINREG_KEY) as key:
+            with winreg.OpenKey(  # type: ignore[attr-defined]
+                winreg.HKEY_CURRENT_USER,  # type: ignore[attr-defined]
+                cls.WINREG_KEY,
+            ) as key:
                 names = {"login_account", "mid", "st"}
                 i = 0
                 while True:
                     try:
-                        value_name, value, typ = winreg.EnumValue(key, i)
+                        enum_val = winreg.EnumValue(  # type: ignore[attr-defined]
+                            key, i
+                        )
+                        value_name, value, typ = enum_val
                         for name in names:
                             if value_name.startswith(f"{name}_"):
                                 result[name] = cls._coerce_reg_str(value, typ)
@@ -139,9 +145,9 @@ class FourDCredentials(BaseCredentials):
 
     @staticmethod
     def _coerce_reg_str(value: Union[str, bytes], typ: int) -> str:
-        if typ == winreg.REG_SZ:
+        if typ == winreg.REG_SZ:  # type: ignore[attr-defined]
             return cast(str, value).rstrip("\0")
-        elif typ == winreg.REG_BINARY:  # pragma: no cover
+        elif typ == winreg.REG_BINARY:  # type: ignore[attr-defined] # pragma: no cover
             try:
                 return cast(bytes, value).decode("utf-8")
             except UnicodeDecodeError:
