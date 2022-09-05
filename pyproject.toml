@@ -25,7 +25,7 @@ tqdm = "^4.62.3"
 aiohttp = "^3.8.1"
 platformdirs = "^2.4.1"
 lxml = "^4.7.1"
-a10sa-script = "^0.0.3"
+a10sa-script = "^0.0.4"
 typing-extensions = "^4.0.1"
 
 [tool.poetry.dev-dependencies]
