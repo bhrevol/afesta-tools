@@ -261,7 +261,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "dparse"
-version = "0.5.2"
+version = "0.6.2"
 description = "A parser for Python dependency files"
 category = "dev"
 optional = false
@@ -901,7 +901,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "safety"
-version = "2.1.1"
+version = "2.2.0"
 description = "Checks installed dependencies for known vulnerabilities and licenses."
 category = "dev"
 optional = false
@@ -909,7 +909,7 @@ python-versions = "*"
 
 [package.dependencies]
 Click = ">=8.0.2"
-dparse = ">=0.5.1"
+dparse = ">=0.6.2"
 packaging = ">=21.0"
 requests = "*"
 "ruamel.yaml" = ">=0.17.21"
@@ -1457,11 +1457,6 @@ charset-normalizer = [
 ]
 cli-exit-tools = [
     {file = "cli_exit_tools-1.2.3.2-py3-none-any.whl", hash = "sha256:6268d51e6ac400fc2f349be2c81c1e7bb9cb3ff94e4058fa5220620c0aadae9f"},
-    {file = "cli_exit_tools-1.2.3.2-py3.10.egg", hash = "sha256:534a6e7fee31f5f505bae256f88a216b03f5b8bc2202468f9d1482342c10fdc6"},
-    {file = "cli_exit_tools-1.2.3.2-py3.6.egg", hash = "sha256:a3759614d4cd5734bd218c3a68b5baf9019a0aa94158fc8da95745438730d523"},
-    {file = "cli_exit_tools-1.2.3.2-py3.7.egg", hash = "sha256:9710a58b3b14ee7ac9b9dbc7e7262844c6a848481650bba7f751d63f332746c9"},
-    {file = "cli_exit_tools-1.2.3.2-py3.8.egg", hash = "sha256:41450f3b845be1b9499535903d6c64ed486747d52a36613bd92ba22aeae6afa5"},
-    {file = "cli_exit_tools-1.2.3.2-py3.9.egg", hash = "sha256:b744b24a2e689c939be28050caa9cc14c739a83c379e2e52319fd660a3ce7454"},
     {file = "cli_exit_tools-1.2.3.2.tar.gz", hash = "sha256:60e798a219c5e3bf42ca309575afdbae22808b55bcf030554a61ea21c68fc206"},
 ]
 click = [
@@ -1537,16 +1532,11 @@ docutils = [
     {file = "docutils-0.19.tar.gz", hash = "sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6"},
 ]
 dparse = [
-    {file = "dparse-0.5.2-py3-none-any.whl", hash = "sha256:b1514fb08895d85b18d4eba3b1b7025ff9e6ea07286282021e19def872129975"},
-    {file = "dparse-0.5.2.tar.gz", hash = "sha256:c348994a1f41c85f664d8f5a47442647bc4e22c5af5b1b26ef29aff0fa5dddcd"},
+    {file = "dparse-0.6.2-py3-none-any.whl", hash = "sha256:8097076f1dd26c377f30d4745e6ec18fef42f3bf493933b842ac5bafad8c345f"},
+    {file = "dparse-0.6.2.tar.gz", hash = "sha256:d45255bda21f998bc7ddf2afd5e62505ba6134756ba2d42a84c56b0826614dfe"},
 ]
 fake-winreg = [
     {file = "fake_winreg-1.6.2.2-py3-none-any.whl", hash = "sha256:6e015d20461271060aed5471ae9421791199fce8316771474e1251fab1946a51"},
-    {file = "fake_winreg-1.6.2.2-py3.10.egg", hash = "sha256:c1b55e1798745b990ad22f74c5167cbe83bd55fcd58a1c271dbb584594bec155"},
-    {file = "fake_winreg-1.6.2.2-py3.6.egg", hash = "sha256:1c28d19a73e12cad516861f58a3ddd0a8bd0e472dd4e33f825b728eebe23c5dd"},
-    {file = "fake_winreg-1.6.2.2-py3.7.egg", hash = "sha256:5219fd6b55b28ee50c7fe07ecb5929685ff0730509b707c888bcfd1a80c1a132"},
-    {file = "fake_winreg-1.6.2.2-py3.8.egg", hash = "sha256:e198d5728f549cd3bd9d5b694245242075dbb23e1c95dfbb57e3dcb6bffa23c7"},
-    {file = "fake_winreg-1.6.2.2-py3.9.egg", hash = "sha256:7d0e6b2c861148659fac147e7009fda3e2d01b3d8175e6becf5e12b38d73b276"},
     {file = "fake_winreg-1.6.2.2.tar.gz", hash = "sha256:d3fe2cdb59268b8f389fa2f0511a1a844c624289c09133d39890076db73cf95a"},
 ]
 filelock = [
@@ -1680,11 +1670,6 @@ Jinja2 = [
 ]
 lib-detect-testenv = [
     {file = "lib_detect_testenv-2.0.2.2-py3-none-any.whl", hash = "sha256:e2d63e1013b0b408f4366e62ecb3fbb3977e407561c3fc8c75b8701f9a263cc2"},
-    {file = "lib_detect_testenv-2.0.2.2-py3.10.egg", hash = "sha256:21378e07a2027a66036f5e52ff799877cd99334a7c19adae02ec326bc699735a"},
-    {file = "lib_detect_testenv-2.0.2.2-py3.6.egg", hash = "sha256:ef81fb56dc524288b76abcbcdcfd91e47058ac81443b2d360f6ae93c3d06ab40"},
-    {file = "lib_detect_testenv-2.0.2.2-py3.7.egg", hash = "sha256:caa62fdea8a946ada4cef3d4149836017c7d02162a816665a56f7c33581cbe43"},
-    {file = "lib_detect_testenv-2.0.2.2-py3.8.egg", hash = "sha256:28b8d30876416b389447cb003515adba3bc4ea556ca7716ce1fb02faa663feeb"},
-    {file = "lib_detect_testenv-2.0.2.2-py3.9.egg", hash = "sha256:2414807c935331d9e95a1fcf3aa6627b6ac6e346e9c0cef71bff78b662704a9c"},
     {file = "lib_detect_testenv-2.0.2.2.tar.gz", hash = "sha256:d8c4d5d725250ab7bff2a5bd4a9f628171e0a5372094f8e34d0e76281d4fca6d"},
 ]
 livereload = [
@@ -2072,8 +2057,8 @@ restructuredtext-lint = [
     {file = "ruamel.yaml.clib-0.2.6.tar.gz", hash = "sha256:4ff604ce439abb20794f05613c374759ce10e3595d1867764dd1ae675b85acbd"},
 ]
 safety = [
-    {file = "safety-2.1.1-py3-none-any.whl", hash = "sha256:05ba551fb61ef24c864835d21089f75bc8b37292680047b9f29693a6552e2fc7"},
-    {file = "safety-2.1.1.tar.gz", hash = "sha256:dbc5dffa2e47da76cc43dfe8cbbbfca99d29118d0c6c54dfcfa11c2bd349dff6"},
+    {file = "safety-2.2.0-py3-none-any.whl", hash = "sha256:b1a0f4c34fb41c502a7a5c54774c18376da382bc9d866ee26b39b2c747c0de40"},
+    {file = "safety-2.2.0.tar.gz", hash = "sha256:6745de12acbd60a58001fe66cb540355187d7b991b30104d9ef14ff4e4826073"},
 ]
 setuptools = [
     {file = "setuptools-65.3.0-py3-none-any.whl", hash = "sha256:2e24e0bec025f035a2e72cdd1961119f557d78ad331bb00ff82efb2ab8da8e82"},
