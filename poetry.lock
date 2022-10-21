@@ -794,7 +794,7 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.
 
 [[package]]
 name = "pytest-asyncio"
-version = "0.19.0"
+version = "0.20.0"
 description = "Pytest support for asyncio"
 category = "dev"
 optional = false
@@ -1306,7 +1306,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<4.0"
-content-hash = "0ec3c88a0bdd0b82e089b754bf4769e87e1869c3d0421955b031a1364cff73aa"
+content-hash = "e6cdd7dd5ba74c718587b1cf26e0e446124b94dc07bece768178b7f5c0da7280"
 
 [metadata.files]
 a10sa-script = [
@@ -1987,8 +1987,8 @@ pytest = [
     {file = "pytest-7.1.3.tar.gz", hash = "sha256:4f365fec2dff9c1162f834d9f18af1ba13062db0c708bf7b946f8a5c76180c39"},
 ]
 pytest-asyncio = [
-    {file = "pytest-asyncio-0.19.0.tar.gz", hash = "sha256:ac4ebf3b6207259750bc32f4c1d8fcd7e79739edbc67ad0c58dd150b1d072fed"},
-    {file = "pytest_asyncio-0.19.0-py3-none-any.whl", hash = "sha256:7a97e37cfe1ed296e2e84941384bdd37c376453912d397ed39293e0916f521fa"},
+    {file = "pytest-asyncio-0.20.0.tar.gz", hash = "sha256:cb2284c02f1d96f206847f2c1cfa40b4e984a727f9b88f04e1c95e4fb30f2de1"},
+    {file = "pytest_asyncio-0.20.0-py3-none-any.whl", hash = "sha256:746b320ffd25c179ae73f2a0ba983da35b18941d80144cff455834d6c37a23ff"},
 ]
 pytest-mock = [
     {file = "pytest-mock-3.10.0.tar.gz", hash = "sha256:fbbdb085ef7c252a326fd8cdcac0aa3b1333d8811f131bdcc701002e1be7ed4f"},
