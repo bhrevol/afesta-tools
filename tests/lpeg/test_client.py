@@ -52,7 +52,7 @@ async def test_require_auth(client_noauth: BaseLpegClient) -> None:
 async def test_status_chk(mocker: MockerFixture, client: BaseLpegClient) -> None:
     """ap_status_chk request should be made."""
     post = mocker.spy(client._session, "post")
-    with aioresponses() as m:  # type: ignore
+    with aioresponses() as m:
         m.post(
             AP_STATUS_CHK_URL,
             status=200,
@@ -94,7 +94,7 @@ async def test_download_video(
         "code": TEST_VIDEO_CODE,
         "pid": TEST_CREDENTIALS.pid,
     }
-    with aioresponses() as m:  # type: ignore
+    with aioresponses() as m:
         redirect = "http://vr00.lpeg.jp/mp4sbs_dl.php?fid=abc123&status=123"
         url = normalize_url(merge_params(DL_URL, params=params))
         m.get(url, status=303, headers={"Location": redirect})
@@ -130,7 +130,7 @@ async def test_download_vcz(
     set_total = mocker.spy(progress, "set_total")
     update = mocker.spy(progress, "update")
     params = {"pid": TEST_CREDENTIALS.pid, "fid": "foo_sbs"}
-    with aioresponses() as m:  # type: ignore
+    with aioresponses() as m:
         url = normalize_url(merge_params(VCS_DL_URL, params=params))
         m.post(
             AP_STATUS_CHK_URL,
@@ -165,12 +165,12 @@ async def test_register_player(
 ) -> None:
     """Should register with default creds."""
     device_id = BaseCredentials.get_device_id()
-    with aioresponses() as m:  # type: ignore
+    with aioresponses() as m:
         url = merge_params(AP_REG_URL, params={"pid": device_id})
         m.get(url, payload={"result": -1})
         with pytest.raises(AuthenticationError):
             await client_noauth.register_player(TEST_CREDENTIALS.uid, "password")
-    with aioresponses() as m:  # type: ignore
+    with aioresponses() as m:
         url = merge_params(AP_REG_URL, params={"pid": device_id})
         m.get(url, payload={"result": 0, "mp_no": TEST_CREDENTIALS.pid})
         m.post(AP_LOGIN_URL, payload={"result": -1})
@@ -184,7 +184,7 @@ async def test_register_player(
     }
     get = mocker.spy(client_noauth._session, "get")
     post = mocker.spy(client_noauth._session, "post")
-    with aioresponses() as m:  # type: ignore
+    with aioresponses() as m:
         url = merge_params(AP_REG_URL, params={"pid": device_id})
         m.get(url, payload={"result": 0, "mp_no": TEST_CREDENTIALS.pid})
         m.post(
