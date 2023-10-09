@@ -80,7 +80,13 @@ Download videos:
 
 .. code:: console
 
-    $ afesta dl m1234-0000 m1234-0000_1 m1234-0000_2 m1234-0000_3
+    $ afesta dl m1234-0000 m1234-0000_1 m1234-0000_2 m1234-0000_3 ...
+
+Download vcz archives:
+
+.. code:: console
+
+    $ afesta dl-vcz ABC123-Takumi-R1_sbs ABC123-Takumi-R2_sbs ABC123-Takumi-R3_sbs ...
 
 Please see the `Command-line Reference <Usage_>`_ for details.
 

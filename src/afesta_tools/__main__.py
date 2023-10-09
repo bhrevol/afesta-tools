@@ -126,5 +126,42 @@ async def _dl_one(client: BaseLpegClient, video_id: str) -> None:
         )
 
 
+@cli.command()
+@click.argument("video_id", nargs=-1)
+def dl_vcz(video_id: Sequence[str]) -> int:  # noqa: DAR101
+    """Download vcz files for an afesta video.
+
+    Requires an account with permissions to download the video (either via
+    standalone purchase or monthly subscription DL benefits).
+
+    If 4D Media Player is installed and the current user is logged in via the
+    player, the existing 4D Media Player credentials will be used. Otherwise,
+    the 'afesta login' command must be run before downloading.
+    """
+    try:
+        creds = _load_credentials()
+    except NoCredentialsError:
+        click.echo("No credentials found. Did you forget to run 'afesta login'?")
+    try:
+        asyncio.run(_dl_vczs(video_id, creds))
+    except AfestaError as exc:  # pragma: no cover
+        click.echo(f"Download failed: {exc}", err=True)
+        return 1
+    return 0
+
+
+async def _dl_vczs(video_ids: Sequence[str], creds: BaseCredentials) -> None:
+    async with FourDClient(creds) as client:
+        await asyncio.gather(*(_dl_vcz(client, video_id) for video_id in video_ids))
+
+
+async def _dl_vcz(client: BaseLpegClient, video_id: str) -> None:
+    with tqdm(unit="B", unit_scale=True) as pbar:
+        await client.download_vcz(
+            video_id,
+            progress=ProgressCallback(pbar),
+        )
+
+
 if __name__ == "__main__":
     cli(prog_name="afesta")  # pragma: no cover
