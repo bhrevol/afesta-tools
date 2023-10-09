@@ -64,7 +64,7 @@ def test_4d_user_pid(mocker: MockerFixture) -> None:
 
     mocker.patch(
         "builtins.open",
-        return_value=io.BytesIO(f'{{"pid": "{TEST_PID}"}}'.encode()),
+        return_value=io.BytesIO(f'{{"pid": "{TEST_PID}"}}'.encode()),  # noqa: B907
     )
     assert FourDCredentials._get_user_pid() == TEST_PID
 
