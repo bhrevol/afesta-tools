@@ -88,6 +88,12 @@ Download vcz archives:
 
     $ afesta dl-vcz ABC123-Takumi-R1_sbs ABC123-Takumi-R2_sbs ABC123-Takumi-R3_sbs ...
 
+Extract CSV scripts from vcz archives:
+
+.. code:: console
+
+   $ afesta extract-script ABC123-Takumi-R1_sbs.vcz ABC123-Takumi-R2_sbs.vcz ABC123-Takumi-R3_sbs.vcz ...
+
 Please see the `Command-line Reference <Usage_>`_ for details.
 
 

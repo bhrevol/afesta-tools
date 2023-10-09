@@ -1,22 +1,30 @@
 """VCS interlocking goods module."""
 import enum
 import io
+from typing import Literal
 from typing import Union
+from typing import cast
 
-from a10sa_script.command import VorzeLinearCommand
-from a10sa_script.command import VorzeRotateCommand
-from a10sa_script.command import VorzeVibrateCommand
 from a10sa_script.script import VCSXCycloneScript
 from a10sa_script.script import VCSXOnaRhythmScript
 from a10sa_script.script import VCSXPistonScript
-from a10sa_script.script import VCSXScript
+from a10sa_script.script import VorzeLinearScript
+from a10sa_script.script import VorzeRotateScript
+from a10sa_script.script import VorzeVibrateScript
 
 
 GoodsScript = Union[
-    VCSXScript[VorzeLinearCommand],
-    VCSXScript[VorzeRotateCommand],
-    VCSXScript[VorzeVibrateCommand],
+    VCSXCycloneScript,
+    VCSXOnaRhythmScript,
+    VCSXPistonScript,
 ]
+ConvertedScript = Union[
+    GoodsScript,
+    VorzeLinearScript,
+    VorzeRotateScript,
+    VorzeVibrateScript,
+]
+ScriptFormat = Literal["csv", "vcsx", "funscript"]
 
 
 class GoodsType(enum.Enum):
@@ -48,8 +56,36 @@ def load_script(typ: GoodsType, data: bytes) -> GoodsScript:
     """
     with io.BytesIO(data) as f:
         if typ == GoodsType.CYCLONE:
-            return VCSXCycloneScript.load(f)
+            return cast(VCSXCycloneScript, VCSXCycloneScript.load(f))
         if typ == GoodsType.PISTON:
-            return VCSXPistonScript.load(f)
-        # else typ == GoodsType.ONARHYTHM
-        return VCSXOnaRhythmScript.load(f)
+            return cast(VCSXPistonScript, VCSXPistonScript.load(f))
+        if typ == GoodsType.ONARHYTHM:
+            return cast(VCSXOnaRhythmScript, VCSXOnaRhythmScript.load(f))
+    raise ValueError("Invalid goods type")
+
+
+def convert_script(script: GoodsScript, fmt: ScriptFormat) -> ConvertedScript:
+    """Convert interlocking goods script data.
+
+    Arguments:
+        script: Goods script.
+        fmt: Output script format.
+
+    Returns:
+        Converted script.
+
+    Raises:
+        ValueError: Unsupported output format.
+    """
+    if fmt == "vcsx":
+        return script
+    if isinstance(script, VCSXCycloneScript):
+        if fmt == "csv":
+            return VorzeRotateScript(script.commands)
+    if isinstance(script, VCSXOnaRhythmScript):
+        if fmt == "csv":
+            return VorzeVibrateScript(script.commands)
+    if isinstance(script, VCSXPistonScript):
+        if fmt == "csv":
+            return VorzeLinearScript(script.commands)
+    raise ValueError(f"Unable to convert {script} to format {fmt}")
