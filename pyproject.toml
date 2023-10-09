@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "afesta-tools"
-version = "0.0.2"
+version = "0.1.0"
 description = "Afesta Tools"
 authors = ["byeonhyeok <bhrevol@gmail.com>"]
 license = "MIT"
@@ -9,7 +9,7 @@ homepage = "https://github.com/bhrevol/afesta-tools"
 repository = "https://github.com/bhrevol/afesta-tools"
 documentation = "https://afesta-tools.readthedocs.io"
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
 ]
 
 [tool.poetry.urls]
