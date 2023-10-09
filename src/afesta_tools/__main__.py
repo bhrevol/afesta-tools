@@ -1,5 +1,7 @@
 """Command-line interface."""
 import asyncio
+from pathlib import Path
+from typing import Literal
 from typing import Optional
 from typing import Sequence
 from typing import cast
@@ -161,6 +163,54 @@ async def _dl_vcz(client: BaseLpegClient, video_id: str) -> None:
             video_id,
             progress=ProgressCallback(pbar),
         )
+
+
+@cli.command()
+@click.argument(
+    "filename",
+    nargs=-1,
+    type=click.Path(exists=True, dir_okay=False, readable=True),
+)
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["csv", "vcsx"], case_sensitive=False),
+    default="csv",
+    help="Script format (defaults to CSV).",
+)
+def extract_script(
+    filename: Sequence[Path], fmt: Literal["csv", "vcsx"]
+) -> int:  # noqa: DAR101
+    """Extract interlocking goods script files from a VCZ file."""
+    try:
+        asyncio.run(_extract_script(filename, fmt))
+    except AfestaError as exc:  # prgma: no cover
+        click.echo(f"Script extraction failed: {exc}", err=True)
+        return 1
+    return 0
+
+
+async def _extract_script(
+    filenames: Sequence[Path], fmt: Literal["csv", "vcsx"]
+) -> None:
+    await asyncio.gather(*(_extract_one(name, fmt) for name in filenames))
+
+
+async def _extract_one(filename: Path, fmt: Literal["csv", "vcsx"]) -> None:
+    from .vcs import GoodsType
+    from .vcs import VCZArchive
+
+    async with VCZArchive(filename) as vcz:
+        for typ in (
+            GoodsType.CYCLONE,
+            GoodsType.PISTON,
+            GoodsType.ONARHYTHM,
+        ):
+            try:
+                path = await vcz.extract_script(typ, fmt)
+                click.echo(f"Extracted {path}")
+            except (KeyError, ValueError):
+                pass
 
 
 if __name__ == "__main__":

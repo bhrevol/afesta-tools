@@ -1,4 +1,5 @@
 """VCZ (zip-compressed VCS) archive module."""
+import os
 import threading
 import zipfile
 from functools import cached_property
@@ -15,6 +16,8 @@ from ..types import PathLike
 from ..utils import to_thread
 from .goods import GoodsScript
 from .goods import GoodsType
+from .goods import ScriptFormat
+from .goods import convert_script
 from .goods import load_script
 
 
@@ -106,3 +109,46 @@ class VCZArchive(AsyncContextManager["VCZArchive"]):
         """
         data = await self.read(typ.value)
         return load_script(typ, data)
+
+    async def extract_script(
+        self,
+        typ: GoodsType,
+        fmt: ScriptFormat = "csv",
+        path: Optional[PathLike] = None,
+    ) -> str:
+        """Extract the specified interlocking goods script.
+
+        Arguments:
+            typ: Goods type
+            fmt: Output format for the extracted script. Defaults to ``csv``.
+                Supported formats:
+                    * ``csv`` - Vorze CSV
+                    * ``vcsx`` - Afesta/LPEG binary vcsx
+            path: Optional output directory in which to extract the script.
+                Defaults to the current working directory.
+
+        Returns:
+            Path for the extracted script.
+
+        Raises:
+            KeyError: The specified goods type is not supported for this video.
+            ValueError: The specified output format is not supported for this
+                script type.
+        """
+        script = convert_script(await self.read_script(typ), fmt)
+        filename = f"{self._script_stem(typ, fmt)}.{fmt}"
+        if path:
+            filename = os.path.join(path, filename)
+        with open(filename, "wb") as f:
+            script.dump(f)
+        return filename
+
+    def _script_stem(self, typ: GoodsType, fmt: ScriptFormat) -> str:
+        base, _ = os.path.splitext(os.path.basename(self.filename))
+        if fmt == "funscript":
+            return base
+        return {
+            GoodsType.CYCLONE: f"{base}_cyclone",
+            GoodsType.ONARHYTHM: f"{base}_onarhythm",
+            GoodsType.PISTON: f"{base}_piston",
+        }[typ]
