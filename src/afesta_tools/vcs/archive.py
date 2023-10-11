@@ -124,6 +124,7 @@ class VCZArchive(AsyncContextManager["VCZArchive"]):
                 Supported formats:
                     * ``csv`` - Vorze CSV
                     * ``vcsx`` - Afesta/LPEG binary vcsx
+                    * ``funscript`` - Funscript JSON (Piston only)
             path: Optional output directory in which to extract the script.
                 Defaults to the current working directory.
 

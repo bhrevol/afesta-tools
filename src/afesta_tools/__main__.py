@@ -174,12 +174,12 @@ async def _dl_vcz(client: BaseLpegClient, video_id: str) -> None:
 @click.option(
     "--format",
     "fmt",
-    type=click.Choice(["csv", "vcsx"], case_sensitive=False),
+    type=click.Choice(["csv", "funscript", "vcsx"], case_sensitive=False),
     default="csv",
     help="Script format (defaults to CSV).",
 )
 def extract_script(
-    filename: Sequence[Path], fmt: Literal["csv", "vcsx"]
+    filename: Sequence[Path], fmt: Literal["csv", "vcsx", "funscript"]
 ) -> int:  # noqa: DAR101
     """Extract interlocking goods script files from a VCZ file."""
     try:
@@ -191,12 +191,14 @@ def extract_script(
 
 
 async def _extract_script(
-    filenames: Sequence[Path], fmt: Literal["csv", "vcsx"]
+    filenames: Sequence[Path], fmt: Literal["csv", "vcsx", "funscript"]
 ) -> None:
     await asyncio.gather(*(_extract_one(name, fmt) for name in filenames))
 
 
-async def _extract_one(filename: Path, fmt: Literal["csv", "vcsx"]) -> None:
+async def _extract_one(
+    filename: Path, fmt: Literal["csv", "vcsx", "funscript"]
+) -> None:
     from .vcs import GoodsType
     from .vcs import VCZArchive
 

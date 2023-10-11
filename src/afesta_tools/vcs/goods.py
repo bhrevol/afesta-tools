@@ -5,6 +5,7 @@ from typing import Literal
 from typing import Union
 from typing import cast
 
+from a10sa_script.script import FunscriptScript
 from a10sa_script.script import VCSXCycloneScript
 from a10sa_script.script import VCSXOnaRhythmScript
 from a10sa_script.script import VCSXPistonScript
@@ -20,6 +21,7 @@ GoodsScript = Union[
 ]
 ConvertedScript = Union[
     GoodsScript,
+    FunscriptScript,
     VorzeLinearScript,
     VorzeRotateScript,
     VorzeVibrateScript,
@@ -88,4 +90,6 @@ def convert_script(script: GoodsScript, fmt: ScriptFormat) -> ConvertedScript:
     if isinstance(script, VCSXPistonScript):
         if fmt == "csv":
             return VorzeLinearScript(script.commands)
+        if fmt == "funscript":
+            return FunscriptScript(script.commands)
     raise ValueError(f"Unable to convert {script} to format {fmt}")
