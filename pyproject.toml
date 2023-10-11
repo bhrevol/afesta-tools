@@ -18,7 +18,7 @@ Changelog = "https://github.com/bhrevol/afesta-tools/releases"
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 click = ">=8.0.1"
-loguru = "^0.6.0"
+loguru = "^0.7.0"
 funcy = "^1.17"
 fake-winreg = "^1.6.0"
 tqdm = "^4.62.3"
