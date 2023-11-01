@@ -53,7 +53,7 @@ sphinx-click = ">=3.0.2"
 typeguard = ">=2.13.3"
 xdoctest = {extras = ["colors"], version = ">=0.15.10"}
 pytest-mock = "^3.6.1"
-pytest-asyncio = "^0.22.0"
+pytest-asyncio = "^0.21.1"
 aioresponses = "^0.7.3"
 lxml-stubs = "^0.4.0"
 
