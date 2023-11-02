@@ -175,11 +175,15 @@ async def _dl_vcz(client: BaseLpegClient, video_id: str) -> None:
     "--format",
     "fmt",
     type=click.Choice(["csv", "funscript", "vcsx"], case_sensitive=False),
-    default="csv",
-    help="Script format (defaults to CSV).",
+    default=["csv"],
+    multiple=True,
+    help=(
+        "Script format (defaults to CSV). --format can be specified multiple"
+        "times to extract more than one format."
+    ),
 )
 def extract_script(
-    filename: Sequence[Path], fmt: Literal["csv", "vcsx", "funscript"]
+    filename: Sequence[Path], fmt: Sequence[Literal["csv", "vcsx", "funscript"]]
 ) -> int:  # noqa: DAR101
     """Extract interlocking goods script files from a VCZ file."""
     try:
@@ -191,13 +195,13 @@ def extract_script(
 
 
 async def _extract_script(
-    filenames: Sequence[Path], fmt: Literal["csv", "vcsx", "funscript"]
+    filenames: Sequence[Path], fmts: Sequence[Literal["csv", "vcsx", "funscript"]]
 ) -> None:
-    await asyncio.gather(*(_extract_one(name, fmt) for name in filenames))
+    await asyncio.gather(*(_extract_one(name, fmts) for name in filenames))
 
 
 async def _extract_one(
-    filename: Path, fmt: Literal["csv", "vcsx", "funscript"]
+    filename: Path, fmts: Sequence[Literal["csv", "vcsx", "funscript"]]
 ) -> None:
     from .vcs import GoodsType
     from .vcs import VCZArchive
@@ -208,11 +212,12 @@ async def _extract_one(
             GoodsType.PISTON,
             GoodsType.ONARHYTHM,
         ):
-            try:
-                path = await vcz.extract_script(typ, fmt)
-                click.echo(f"Extracted {path}")
-            except (KeyError, ValueError):
-                pass
+            for fmt in fmts:
+                try:
+                    path = await vcz.extract_script(typ, fmt)
+                    click.echo(f"Extracted {path}")
+                except (KeyError, ValueError):
+                    pass
 
 
 if __name__ == "__main__":

@@ -46,6 +46,8 @@ Features
   available (Windows only)
 * Download Afesta videos via CLI (requires valid account and appropriate
   purchases/permissions)
+* Download and extract interlocking goods scripts from Afesta vcz archives
+  (supports extracting scripts in both Vorze CSV and Funscript formats)
 
 
 Requirements
@@ -68,7 +70,8 @@ You can install *Afesta Tools* via pip_ from PyPI_:
 Usage
 -----
 
-Login to Afesta via CLI:
+Login to Afesta via CLI (not required on Windows if 4D Media Player is
+installed and logged into Afesta):
 
 .. code:: console
 
@@ -93,6 +96,12 @@ Extract CSV scripts from vcz archives:
 .. code:: console
 
    $ afesta extract-script ABC123-Takumi-R1_sbs.vcz ABC123-Takumi-R2_sbs.vcz ABC123-Takumi-R3_sbs.vcz ...
+
+Extract Funscript scripts from vcz archives (for Piston only).
+
+.. code:: console
+
+   $ afesta extract-script --format=funscript ABC123-Takumi-R1_sbs.vcz ABC123-Takumi-R2_sbs.vcz ABC123-Takumi-R3_sbs.vcz ...
 
 Please see the `Command-line Reference <Usage_>`_ for details.
 
