@@ -134,7 +134,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
         return await self._session.post(url, **kwargs)
 
     @require_auth
-    async def status_chk(self) -> None:
+    async def status_chk(self) -> dict[str, Any]:
         """Run ap_status_chk API request."""
         assert self.creds is not None
         payload = {
@@ -143,7 +143,8 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
             "pid": self.creds.pid,
             "type": "dpvr",
         }
-        await self._post(AP_STATUS_CHK_URL, data=payload)
+        resp = await self._post(AP_STATUS_CHK_URL, data=payload)
+        return await resp.json()
 
     async def _download(
         self,
@@ -276,11 +277,16 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
                     "type": "dpvr",
                 },
             )
-            data = (await resp.json()).get("data", {})
+            result = await resp.json()
+            data = result.get("data", {})
             mid = data["mid"]
             st = data["st"]
         except (aiohttp.ClientError, KeyError) as exc:
             raise AuthenticationError("Login failed.") from exc
+        if result.get("result", 0) != 1:
+            raise AuthenticationError("Login failed.")
+        if (await self.status_chk()).get("reg", 0) != 1:
+            raise AuthenticationError("Player registration failed.")
         self.creds = self.new_credentials(uid=username, st=st, mid=mid, pid=pid)
         return self.creds
 
