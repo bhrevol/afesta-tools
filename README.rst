@@ -49,11 +49,15 @@ Features
 * Download and extract interlocking goods scripts from Afesta vcz archives
   (supports extracting scripts in both Vorze CSV and Funscript formats)
 
+Note: 8K downloads are not currently supported, as 4D Media Player only downloads
+the 4K version for 8K videos. Interlocking goods vcz download and extraction are
+supported for 8K videos downloaded via the Afesta website.
+
 
 Requirements
 ------------
 
-* Python 3.8+
+* Python 3.9+
 * Valid Afesta account
 
 
@@ -79,29 +83,102 @@ installed and logged into Afesta):
     Afesta username: username
     Afesta password:
 
+List purchased videos which can be downloaded:
+
+.. code:: console
+
+    $ afesta list
+    PRVR-050-Takumi: 【4K匠】指名No. 1泡姫・涼森れむの中出しソ...
+    3DSVR-1393: 【8KHQ】【紗倉まな8K解禁】妻に捨てられ、残...
+    ...
+
+    $ afesta list -d
+    PRVR-050-Takumi:
+      【4K匠】指名No. 1泡姫・涼森れむの中出しソープ濃厚ご奉仕SEX！
+      Parts: 3
+      Actresses: 涼森れむ
+      Genres: 女優
+      Release date: 01/29/21 10:00:00 JST
+      Duration: 1:16:26
+    ...
+
+    $ afesta list -l en
+    PRVR-050-Takumi: [4K Takumi] Hardcore Cre...
+    3DSVR-1393: 8KHQ] [8K Liberation of ...
+    ...
+
+    $ afesta list -d -l en
+    PRVR-050-Takumi:
+      [4K Takumi] Hardcore Creampie with the Best Girl in the Brothel, starring Remu Suzumori
+      Parts: 3
+      Actresses: Remu Suzumori
+      Genres: AV Actresses
+      Release date: 01/29/21 10:00:00 JST
+      Duration: 1:16:26
+    ...
+
 Download videos:
 
 .. code:: console
 
-    $ afesta dl m1234-0000 m1234-0000_1 m1234-0000_2 m1234-0000_3 ...
+    $ afesta dl PRVR-050                                                                                                           ⏎
+    Downloading PRVR-050-Takumi: 【4K匠】指名No. 1泡姫・涼森れむの中出しソ... (3 parts):   0%|           | 97.7M/19.6G [00:15<50:15, 6.48MB/s]
 
-Download vcz archives:
+    $ tree .
+    .
+    ├── PRVR-050-Takumi-R1_sbs.mp4
+    ├── PRVR-050-Takumi-R2_sbs.mp4
+    └── PRVR-050-Takumi-R3_sbs.mp4
+
+Download vcz archives for Afesta video files:
 
 .. code:: console
 
-    $ afesta dl-vcz ABC123-Takumi-R1_sbs ABC123-Takumi-R2_sbs ABC123-Takumi-R3_sbs ...
+    $ afesta dl-vcz PRVR-050-Takumi-*.mp4
+    100%|██████████████████████████████████████████████████| 430k/430k [00:00<00:00, 740kB/s]
+    100%|██████████████████████████████████████████████████| 509k/509k [00:00<00:00, 852kB/s]
+    100%|██████████████████████████████████████████████████| 454k/454k [00:00<00:00, 752kB/s]
+
+    $ tree .
+    .
+    ├── PRVR-050-Takumi-R1_sbs.mp4
+    ├── PRVR-050-Takumi-R1_sbs.vcz
+    ├── PRVR-050-Takumi-R2_sbs.mp4
+    ├── PRVR-050-Takumi-R2_sbs.vcz
+    ├── PRVR-050-Takumi-R3_sbs.mp4
+    └── PRVR-050-Takumi-R3_sbs.vcz
 
 Extract CSV scripts from vcz archives:
 
 .. code:: console
 
-   $ afesta extract-script ABC123-Takumi-R1_sbs.vcz ABC123-Takumi-R2_sbs.vcz ABC123-Takumi-R3_sbs.vcz ...
+    $ afesta extract-script --format csv --format funscript PRVR-050-Takumi-*.vcz
+    Extracted PRVR-050-Takumi-R1_sbs_cyclone.csv
+    Extracted PRVR-050-Takumi-R1_sbs.funscript
+    Extracted PRVR-050-Takumi-R1_sbs_piston.csv
+    Extracted PRVR-050-Takumi-R1_sbs_onarhythm.csv
+    ...
 
-Extract Funscript scripts from vcz archives (for Piston only).
-
-.. code:: console
-
-   $ afesta extract-script --format=funscript ABC123-Takumi-R1_sbs.vcz ABC123-Takumi-R2_sbs.vcz ABC123-Takumi-R3_sbs.vcz ...
+    $ tree .
+    .
+    ├── PRVR-050-Takumi-R1_sbs.funscript
+    ├── PRVR-050-Takumi-R1_sbs.mp4
+    ├── PRVR-050-Takumi-R1_sbs.vcz
+    ├── PRVR-050-Takumi-R1_sbs_cyclone.csv
+    ├── PRVR-050-Takumi-R1_sbs_onarhythm.csv
+    ├── PRVR-050-Takumi-R1_sbs_piston.csv
+    ├── PRVR-050-Takumi-R2_sbs.funscript
+    ├── PRVR-050-Takumi-R2_sbs.mp4
+    ├── PRVR-050-Takumi-R2_sbs.vcz
+    ├── PRVR-050-Takumi-R2_sbs_cyclone.csv
+    ├── PRVR-050-Takumi-R2_sbs_onarhythm.csv
+    ├── PRVR-050-Takumi-R2_sbs_piston.csv
+    ├── PRVR-050-Takumi-R3_sbs.funscript
+    ├── PRVR-050-Takumi-R3_sbs.mp4
+    ├── PRVR-050-Takumi-R3_sbs.vcz
+    ├── PRVR-050-Takumi-R3_sbs_cyclone.csv
+    ├── PRVR-050-Takumi-R3_sbs_onarhythm.csv
+    └── PRVR-050-Takumi-R3_sbs_piston.csv
 
 Please see the `Command-line Reference <Usage_>`_ for details.
 

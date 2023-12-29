@@ -11,3 +11,7 @@ class NoCredentialsError(AfestaError):
 
 class AuthenticationError(AfestaError):
     """API authentication error."""
+
+
+class BadFIDError(AfestaError):
+    """Invalid FID."""
