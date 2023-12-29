@@ -1,12 +1,25 @@
 """LPEG API client."""
+import asyncio
 import enum
+import html
+import json
 import os
+import re
+import unicodedata
 from abc import abstractmethod
 from contextlib import AsyncExitStack
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
+from datetime import timezone
+from functools import partial
 from typing import Any
 from typing import AsyncContextManager
+from typing import AsyncIterator
 from typing import Awaitable
 from typing import Callable
+from typing import Iterable
+from typing import Literal
 from typing import Optional
 
 import aiohttp
@@ -14,6 +27,7 @@ from funcy import wraps
 
 from ..exceptions import AfestaError
 from ..exceptions import AuthenticationError
+from ..exceptions import BadFIDError
 from ..progress import ProgressCallback
 from ..types import PathLike
 from .credentials import BaseCredentials
@@ -24,6 +38,8 @@ AP_STATUS_CHK_URL = "https://www.lpeg.jp/manage/ap_status_chk.php"
 AP_LOGIN_URL = "https://www.lpeg.jp/manage/ap_login.php"
 AP_REG_URL = "http://www.lpeg.jp/manage/ap_reg.php"
 DL_URL = "https://lpeg.jp/h/"
+MP4_DL_URL = "https://www.lpeg.jp/point/mp4_dl.php"
+PS_GET_LIST_URL = "https://www.lpeg.jp/manage/ps_get_list.php"
 VCS_DL_URL = "https://data.lpeg.jp/ap_vcs_dl.php"
 
 
@@ -47,6 +63,140 @@ class VideoQuality(enum.Enum):
     H264 = "h264"  # 3K/4K H264
     H265 = "h265"  # 3K/4K HEVC
     PC_SBS = "h264"  # PC 3K/4K
+
+
+class PSListType(enum.IntEnum):
+    """Request type for ps_get_list."""
+
+    PURCHASES = 1
+    FAVORITES = 2
+
+
+_CLEAN_TITLE_RE = re.compile(r"^(?:(?:【.*】)|(?:\[?.*\]))*\s*(?P<title>.*)$")
+_FID_RE = re.compile(r"^(?P<full>(?P<fid>.*?)(?:(?P<set_suffix>\-(?:R|Part))\d+)?)_st$")
+
+
+@dataclass(frozen=True)
+class PSListEntry:
+    """PS Video list entry.
+
+    Attributes:
+        acters: Actresses.
+        big_img: Main cover image URL.
+        categories: Genre tags.
+        code: Purchase code. Only applicable when `dl` is True.
+        comment: Video description.
+        dl: True if video can be downloaded.
+        favorite: True if video is favorited.
+        file_name: Streaming playlist filename.
+        id: Page entry ID. Note that this is not a video ID. The ID only has meaning
+            within a single page of the ps_get_list response list.
+        img: First preview/gallery image URL.
+        maker: Video maker, never set.
+        quality: Quality abbreviation (i.e. "HQ60").
+        release_date: Release timestamp.
+        set_num: 0-indexed number of parts for this video set. None if video does not
+            have multiple parts.
+        signal: True if video supports linked goods.
+        time: Total video duration in seconds.
+        title: Abbreviated video title.
+        title_all: Full video title.
+    """
+
+    acters: list[str]
+    big_img: str
+    categories: list[str]
+    code: Optional[str]
+    comment: str
+    dl: bool
+    favorite: bool
+    file_name: str
+    id: int
+    img: str
+    maker: str
+    quality: str
+    release_date: datetime
+    set_num: Optional[int]
+    signal: bool
+    time: int
+    title: str
+    title_all: str
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> "PSListEntry":
+        """Return an entry from an LPEG API JSON dict."""
+        acters = [actor.strip() for actor in d.pop("acters").split(",")]
+        categories = [cat.strip() for cat in d.pop("categories").split(",")]
+        comment = html.unescape(d.pop("comment")).replace("<BR>", "\n")
+        dl = d.pop("dl") != 0
+        favorite = d.pop("favorite") != 0
+        release_date = datetime.fromisoformat(d.pop("release_date")).replace(
+            tzinfo=timezone(timedelta(hours=9), name="JST")
+        )
+        n = d.pop("set_num")
+        set_num = int(n) if n != "0" else None
+        signal = d.pop("signal") != 0
+        return cls(
+            acters=acters,
+            categories=categories,
+            comment=comment,
+            dl=dl,
+            favorite=favorite,
+            release_date=release_date,
+            set_num=set_num,
+            signal=signal,
+            **d,
+        )
+
+    @property
+    def title_clean(self) -> str:
+        """Return clean title.
+
+        Any quality prefix blocks (i.e. 【4K匠】) will be stripped and unicode
+        characters will be normalized in the NFKC form.
+        """
+        m = _CLEAN_TITLE_RE.match(self.title_all)
+        title = m.group("title") if m else self.title_all
+        return unicodedata.normalize("NFKC", title)
+
+    def get_fid(self, part: Optional[int] = None) -> str:
+        """Return Afesta FID.
+
+        Arguments:
+            part: FID for the specified set part will be returned when specified.
+
+        Returns:
+            Video FID.
+
+        Raises:
+            ValueError: `part` is invalid.
+        """
+        if part is not None:
+            if part < 1 or (self.num_parts is not None and part > self.num_parts):
+                raise ValueError("Invalid part number")
+        stem, _ = os.path.splitext(self.file_name)
+        m = _FID_RE.match(stem)
+        if m:
+            if self.num_parts is None:
+                return m.group("full")
+            fid = m.group("fid")
+            if part is None:
+                return fid
+            set_suffix = m.group("set_suffix")
+            return f"{fid}{set_suffix}{part}"
+        return stem
+
+    @property
+    def num_parts(self) -> Optional[int]:
+        """Return total number of parts."""
+        if self.set_num is None:
+            return None
+        return self.set_num + 1
+
+    @property
+    def duration(self) -> timedelta:
+        """Return total video duration as a Python timedelta."""
+        return timedelta(seconds=self.time)
 
 
 def require_auth(coroutine: Callable[..., Awaitable[Any]]) -> Any:
@@ -161,9 +311,8 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
         if download_dir:
             filename = os.path.join(download_dir, filename)
         if progress:
-            progress.set_desc(f"Downloading {filename}")
             if "Content-Length" in response.headers:  # pragma: no cover
-                progress.set_total(int(response.headers["Content-Length"]))
+                progress.inc_total(int(response.headers["Content-Length"]))
         with open(filename, mode="wb") as fp:
             async for chunk in response.content.iter_chunked(self.CHUNK_SIZE):
                 fp.write(chunk)
@@ -171,26 +320,98 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
                     progress.update(len(chunk))
 
     @require_auth
-    async def download_video(
+    async def download_video(  # noqa: C901
+        self,
+        code: Optional[str] = None,
+        fid: Optional[str] = None,
+        download_dir: Optional[PathLike] = None,
+        quality: Optional[VideoQuality] = None,
+        progress: Optional[ProgressCallback] = None,
+        vr: bool = True,
+        parts: Optional[Iterable[int]] = None,
+        lang: Literal["JP", "EN"] = "JP",
+    ) -> None:
+        """Download a video.
+
+        Arguments:
+            code: Video code (LPEG purchase code). Takes precedence over `fid`.
+            fid: Video FID. When `fid` is set, client will attempt to search for an
+                available download matching the specified `fid`.
+            download_dir: Directory for downloaded files. Defaults to the
+                current working dir.
+            quality: Video quality. Defaults to `DEFAULT_VIDEO_QUALITY`.
+            progress: Optional progress callback.
+            vr: True for VR listing, False for 2D. Only applicable when using `fid`.
+            parts: Specific parts to download. Defaults to downloading all parts. Only
+                applicable when using `fid`.
+            lang: Metadata language for returned videos when using `fid`.
+
+        Either `code` or `fid` must be set.
+
+        Note:
+            Actual download quality may be worse than the requested value
+            depending on the video.
+
+        Raises:
+            ValueError: Both `code` and `fid` were not set.
+            BadFIDError: The specified `fid` was invalid or ambiguous.
+            AfestaError: An unexpected error occurred while downloading.
+        """
+        if code:
+            codes = [code]
+            desc = f"Downloading purchase {code}"
+        else:
+            if not fid:
+                raise ValueError("Either code or fid must be set.")
+            videos = [
+                video async for video in self.get_videos(vr=vr, words=fid, lang=lang)
+            ]
+            if not videos:
+                raise BadFIDError(f"Could not find any video matching FID {fid}.")
+            if len(videos) > 1:
+                matches = [v.get_fid() for v in videos]
+                raise BadFIDError(
+                    f"Got multiple possible matches for FID: {', '.join(matches)}"
+                )
+            video = videos[0]
+            if video.set_num is None:
+                codes = [video.code]
+                desc_parts = ""
+            else:
+                codes = []
+                for part in parts or range(1, video.num_parts + 1):
+                    # NOTE: multipart download codes are 0-indexed
+                    # i.e. <code>_1 corresponds to video part <fid>-R2
+                    if part > video.num_parts:
+                        pass
+                    elif part == 1:
+                        codes.append(video.code)
+                    else:
+                        codes.append(f"{video.code}_{part - 1}")
+                desc_parts = f" ({len(codes)} parts)"
+            desc = f"Downloading {video.get_fid()}: {video.title}{desc_parts}"
+
+        progress.set_desc(desc)
+        results = await asyncio.gather(
+            *(
+                self._download_code(
+                    code, download_dir=download_dir, quality=quality, progress=progress
+                )
+                for code in codes
+            ),
+            return_exceptions=True,
+        )
+        for r in results:
+            if isinstance(r, BaseException):
+                raise AfestaError("File download failed") from r
+
+    async def _download_code(
         self,
         code: str,
         download_dir: Optional[PathLike] = None,
         quality: Optional[VideoQuality] = None,
         progress: Optional[ProgressCallback] = None,
-    ) -> None:
-        """Download a video.
-
-        Arguments:
-            code: Video code (LPEG tr... code).
-            download_dir: Directory for downloaded files. Defaults to the
-                current working dir.
-            quality: Video quality. Defaults to `DEFAULT_VIDEO_QUALITY`.
-            progress: Optional progress callback.
-
-        Note:
-            Actual download quality may be worse than the requested value
-            depending on the video.
-        """
+    ):
         resp = await self._request_video(code, quality=quality)
         await self._download(resp, download_dir=download_dir, progress=progress)
 
@@ -293,6 +514,89 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
     @abstractmethod
     def new_credentials(self, *args: Any, **kwargs: Any) -> BaseCredentials:
         """Return a new credentials instance."""
+
+    async def get_videos(
+        self,
+        typ: PSListType = PSListType.PURCHASES,
+        lang: Literal["EN", "JP"] = "JP",
+        vr: bool = True,
+        words: Optional[str] = None,
+        limit: Optional[int] = None,
+    ) -> AsyncIterator[PSListEntry]:
+        """Iterate over videos returned by ps_get_list.
+
+        Arguments:
+            typ: List type (either purchases or favorites).
+            lang: Metadata language for returned videos.
+            vr: True for VR listing, False for 2D.
+            words: Optional search string for filtering returned videos.
+            limit: Maximum number of results to yield.
+
+        Yields:
+            Video results.
+        """
+        _loads = partial(json.loads, cls=partial(json.JSONDecoder, strict=False))
+        i = page = -1
+        num = 36
+        while limit is None or (i + 1 < limit):
+            resp = await self._request_list(
+                typ=typ,
+                lang=lang,
+                vr=vr,
+                words=words,
+                page=page + 1,
+                num=num,
+            )
+            result = await resp.json(loads=_loads)
+            count = result["page"]["count"]
+            pagecount = result["page"]["pagecount"]
+            page = result["page"]["pageindex"]
+            limit = count if limit is None else min(count, limit)
+            for d in result.get("data", []):
+                entry = PSListEntry.from_dict(d)
+                i = num * page + entry.id
+                yield entry
+                if i + 1 >= limit:
+                    break
+            if page >= pagecount:
+                break
+
+    @require_auth
+    async def _request_list(
+        self,
+        typ: PSListType = PSListType.PURCHASES,
+        lang: Literal["EN", "JP"] = "JP",
+        vr: bool = True,
+        start: int = 0,
+        page: int = 0,
+        num: int = 36,
+        words: Optional[str] = None,
+        **kwargs,
+    ) -> aiohttp.ClientResponse:
+        """Return a ps_get_list results page."""
+        assert self.creds is not None
+        payload = {
+            "st": self.creds.st,
+            "mid": self.creds.mid,
+            "r": "all",
+            "type": typ.value,
+            "lang": lang,
+            "vr": "vr" if vr else "non",
+            "cat": "",
+            "maker": "",
+            "order": "",
+            "act": "",
+            "photos": "",
+            "signal": "",
+            "subtitle": "",
+            "favorite": "",
+            "start": start,
+            "page": page,
+            "num": num,
+        }
+        if words:
+            payload["words"] = words
+        return await self._post(PS_GET_LIST_URL, data=payload)
 
 
 class FourDClient(BaseLpegClient):
