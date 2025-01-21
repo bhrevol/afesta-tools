@@ -98,7 +98,7 @@ async def test_read(mocker: MockerFixture, vcz: VCZArchive) -> None:
     with pytest.raises(KeyError):
         await vcz.read("not_in_archive")
     assert await vcz.read("HeadKey") == data
-    assert read.called_with("HeadKey1d+.bin")
+    read.assert_called_with("HeadKey1d+.bin")
 
 
 @pytest.mark.parametrize(
@@ -111,4 +111,4 @@ async def test_read_script(
     mocker.patch.object(vcz._zip, "read", return_value=b"data")
     load_script = mocker.patch("afesta_tools.vcs.archive.load_script")
     await vcz.read_script(typ)
-    assert load_script.called_with(typ, b"data")
+    load_script.assert_called_with(typ, b"data")
