@@ -19,6 +19,7 @@ from collections.abc import AsyncIterator
 from collections.abc import Awaitable
 from collections.abc import Callable
 from collections.abc import Iterable
+from typing import cast
 from typing import Literal
 from typing import Optional
 
@@ -297,7 +298,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
             "type": "dpvr",
         }
         resp = await self._post(AP_STATUS_CHK_URL, data=payload)
-        return await resp.json()
+        return cast(dict[str, Any], await resp.json())
 
     async def _download(
         self,
@@ -377,11 +378,13 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
                     f"Got multiple possible matches for FID: {', '.join(matches)}"
                 )
             video = videos[0]
+            assert video.code
             if video.set_num is None:
                 codes = [video.code]
                 desc_parts = ""
             else:
                 codes = []
+                assert video.num_parts is not None
                 for part in parts or range(1, video.num_parts + 1):
                     # NOTE: multipart download codes are 0-indexed
                     # i.e. <code>_1 corresponds to video part <fid>-R2
@@ -415,7 +418,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
         download_dir: PathLike | None = None,
         quality: VideoQuality | None = None,
         progress: ProgressCallback | None = None,
-    ):
+    ) -> None:
         resp = await self._request_video(code, quality=quality)
         await self._download(resp, download_dir=download_dir, progress=progress)
 
@@ -539,7 +542,10 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
         Yields:
             Video results.
         """
-        _loads = partial(json.loads, cls=partial(json.JSONDecoder, strict=False))
+        _loads = partial(
+            json.loads,
+            cls=cast(type[json.JSONDecoder], partial(json.JSONDecoder, strict=False)),
+        )
         i = page = -1
         num = 36
         while limit is None or (i + 1 < limit):
@@ -556,6 +562,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
             pagecount = result["page"]["pagecount"]
             page = result["page"]["pageindex"]
             limit = count if limit is None else min(count, limit)
+            assert limit is not None
             for d in result.get("data", []):
                 entry = PSListEntry.from_dict(d)
                 i = num * page + entry.id
@@ -575,7 +582,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
         page: int = 0,
         num: int = 36,
         words: str | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> aiohttp.ClientResponse:
         """Return a ps_get_list results page."""
         assert self.creds is not None
