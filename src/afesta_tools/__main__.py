@@ -5,6 +5,7 @@ from contextlib import aclosing
 from pathlib import Path
 from typing import Literal
 from collections.abc import Sequence
+from typing import Any
 from typing import cast
 
 import click
@@ -103,14 +104,14 @@ async def _login(username: str, password: str) -> BaseCredentials:
     "-l",
     "--lang",
     type=click.Choice(["jp", "en"], case_sensitive=False),
-    default="JP",
+    default="jp",
 )
 @click.argument("code_or_fid", nargs=-1)
 def dl(
     code_or_fid: Sequence[str],
     quality: str | None,
     code: bool,
-    lang: Literal["JP", "EN"],
+    lang: Literal["jp", "en"],
 ) -> int:  # noqa: DAR101
     """Download an afesta video.
 
@@ -139,7 +140,7 @@ def dl(
     return 0
 
 
-async def _dl(video_ids: Sequence[str], creds: BaseCredentials, **kwargs) -> None:
+async def _dl(video_ids: Sequence[str], creds: BaseCredentials, **kwargs: Any) -> None:
     async with FourDClient(creds) as client:
         await asyncio.gather(
             *(_dl_one(client, video_id, **kwargs) for video_id in video_ids)
@@ -147,7 +148,7 @@ async def _dl(video_ids: Sequence[str], creds: BaseCredentials, **kwargs) -> Non
 
 
 async def _dl_one(
-    client: BaseLpegClient, video_id: str, code: bool = False, **kwargs
+    client: BaseLpegClient, video_id: str, code: bool = False, **kwargs: Any
 ) -> None:
     with tqdm(unit="B", unit_scale=True) as pbar:
         if code:
@@ -262,7 +263,7 @@ async def _extract_one(
 )
 @click.option("-d", "--detail", is_flag=True, help="List detailed video information.")
 @click.option("--tv", is_flag=True, help="List AfestaTV/2D videos (defaults to VR).")
-def list(tv: bool, detail: bool, lang: Literal["JP", "EN"]):
+def list(tv: bool, detail: bool, lang: Literal["JP", "EN"]) -> int:
     """List available afesta video downloads.
 
     Requires an account with permissions to download the video (either via
@@ -277,7 +278,7 @@ def list(tv: bool, detail: bool, lang: Literal["JP", "EN"]):
     except NoCredentialsError:
         click.echo("No credentials found. Did you forget to run 'afesta login'?")
     try:
-        asyncio.run(_list(creds, tv, detail, lang.upper()))
+        asyncio.run(_list(creds, tv, detail, cast(Literal["JP", "EN"], lang.upper())))
     except AfestaError as exc:  # pragma: no cover
         click.echo(f"Listing failed: {exc}", err=True)
         return 1
@@ -286,9 +287,9 @@ def list(tv: bool, detail: bool, lang: Literal["JP", "EN"]):
 
 async def _list(
     creds: BaseCredentials, tv: bool, detail: bool, lang: Literal["JP", "EN"]
-):
+) -> None:
     async with FourDClient(creds) as client:
-        async with aclosing(client.get_videos(vr=not tv, lang=lang)) as results:
+        async with aclosing(client.get_videos(vr=not tv, lang=lang)) as results:  # type: ignore[type-var]
             async for video in results:
                 if detail:
                     lines = [
