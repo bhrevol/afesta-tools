@@ -2,7 +2,7 @@
 import asyncio
 import contextvars
 import functools
-from typing import Callable
+from collections.abc import Callable
 from typing import TypeVar
 
 from typing_extensions import ParamSpec

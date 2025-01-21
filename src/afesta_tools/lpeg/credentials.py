@@ -5,8 +5,6 @@ import platform
 import uuid
 from dataclasses import dataclass
 from typing import ClassVar
-from typing import Dict
-from typing import Union
 from typing import cast
 
 from ..exceptions import NoCredentialsError
@@ -116,8 +114,8 @@ class FourDCredentials(BaseCredentials):
         )
 
     @classmethod
-    def _get_user_reg_values(cls) -> Dict[str, str]:
-        result: Dict[str, str] = {}
+    def _get_user_reg_values(cls) -> dict[str, str]:
+        result: dict[str, str] = {}
         try:
             with winreg.OpenKey(  # type: ignore[attr-defined]
                 winreg.HKEY_CURRENT_USER,  # type: ignore[attr-defined]
@@ -144,7 +142,7 @@ class FourDCredentials(BaseCredentials):
         return result
 
     @staticmethod
-    def _coerce_reg_str(value: Union[str, bytes], typ: int) -> str:
+    def _coerce_reg_str(value: str | bytes, typ: int) -> str:
         if typ == winreg.REG_SZ:  # type: ignore[attr-defined]
             return cast(str, value).rstrip("\0")
         elif typ == winreg.REG_BINARY:  # type: ignore[attr-defined] # pragma: no cover
@@ -163,7 +161,7 @@ class FourDCredentials(BaseCredentials):
         path = os.path.expanduser(cls.PID_CONFIG_PATH)
         try:
             with open(path, encoding="utf-8") as fp:
-                pid_config: Dict[str, str] = json.load(fp)
+                pid_config: dict[str, str] = json.load(fp)
             return pid_config["pid"]
         except (OSError, json.JSONDecodeError, KeyError) as exc:
             raise NoCredentialsError(

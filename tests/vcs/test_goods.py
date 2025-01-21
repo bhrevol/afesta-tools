@@ -1,5 +1,4 @@
 """Tests for the VCS goods module."""
-from typing import Type
 from typing import TypeVar
 
 import pytest
@@ -27,7 +26,7 @@ _T = TypeVar("_T", bound=BaseVorzeCommand)
     ],
 )
 def test_load_script(
-    mocker: MockerFixture, typ: GoodsType, cls: Type[VCSXScript[_T]]
+    mocker: MockerFixture, typ: GoodsType, cls: type[VCSXScript[_T]]
 ) -> None:
     """Should load the approrpiate script class."""
     mocker.patch.object(cls, "load", return_value=cls([]))

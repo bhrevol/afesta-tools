@@ -1,8 +1,7 @@
 """Test cases for LPEG client module."""
 import os
 from pathlib import Path
-from typing import AsyncGenerator
-from typing import Optional
+from collections.abc import AsyncGenerator
 
 import pytest
 import pytest_asyncio
@@ -81,7 +80,7 @@ async def test_download_video(
 ) -> None:
     """Download request should be made."""
     if with_progress:
-        progress: Optional[ProgressCallback] = ProgressCallback(mocker.MagicMock())
+        progress: ProgressCallback | None = ProgressCallback(mocker.MagicMock())
         set_desc = mocker.spy(progress, "set_desc")
         set_total = mocker.spy(progress, "set_total")
         update = mocker.spy(progress, "update")
