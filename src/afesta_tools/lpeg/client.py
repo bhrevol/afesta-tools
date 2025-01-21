@@ -15,10 +15,10 @@ from datetime import timezone
 from functools import partial
 from typing import Any
 from typing import AsyncContextManager
-from typing import AsyncIterator
-from typing import Awaitable
-from typing import Callable
-from typing import Iterable
+from collections.abc import AsyncIterator
+from collections.abc import Awaitable
+from collections.abc import Callable
+from collections.abc import Iterable
 from typing import Literal
 from typing import Optional
 
@@ -101,12 +101,13 @@ class PSListEntry:
         time: Total video duration in seconds.
         title: Abbreviated video title.
         title_all: Full video title.
+        ai3d: Video is AI generated.
     """
 
     acters: list[str]
     big_img: str
     categories: list[str]
-    code: Optional[str]
+    code: str | None
     comment: str
     dl: bool
     favorite: bool
@@ -116,11 +117,13 @@ class PSListEntry:
     maker: str
     quality: str
     release_date: datetime
-    set_num: Optional[int]
+    set_num: int | None
     signal: bool
     time: int
     title: str
     title_all: str
+    item_id: str
+    ai3d: int
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> "PSListEntry":
@@ -159,7 +162,7 @@ class PSListEntry:
         title = m.group("title") if m else self.title_all
         return unicodedata.normalize("NFKC", title)
 
-    def get_fid(self, part: Optional[int] = None) -> str:
+    def get_fid(self, part: int | None = None) -> str:
         """Return Afesta FID.
 
         Arguments:
@@ -187,7 +190,7 @@ class PSListEntry:
         return stem
 
     @property
-    def num_parts(self) -> Optional[int]:
+    def num_parts(self) -> int | None:
         """Return total number of parts."""
         if self.set_num is None:
             return None
@@ -234,7 +237,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
     DEFAULT_VIDEO_QUALITY = VideoQuality.PC_SBS
     _CLIENT_TIMEOUT = 5 * 60
 
-    def __init__(self, creds: Optional[BaseCredentials] = None) -> None:
+    def __init__(self, creds: BaseCredentials | None = None) -> None:
         """Construct a new client.
 
         Arguments:
@@ -299,11 +302,11 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
     async def _download(
         self,
         response: aiohttp.ClientResponse,
-        download_dir: Optional[PathLike] = None,
-        progress: Optional[ProgressCallback] = None,
+        download_dir: PathLike | None = None,
+        progress: ProgressCallback | None = None,
     ) -> None:
         if response.content_disposition:
-            filename: Optional[str] = response.content_disposition.filename
+            filename: str | None = response.content_disposition.filename
         else:  # pragma: no cover
             filename = None
         if not filename:  # pragma: no cover
@@ -322,13 +325,13 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
     @require_auth
     async def download_video(  # noqa: C901
         self,
-        code: Optional[str] = None,
-        fid: Optional[str] = None,
-        download_dir: Optional[PathLike] = None,
-        quality: Optional[VideoQuality] = None,
-        progress: Optional[ProgressCallback] = None,
+        code: str | None = None,
+        fid: str | None = None,
+        download_dir: PathLike | None = None,
+        quality: VideoQuality | None = None,
+        progress: ProgressCallback | None = None,
         vr: bool = True,
-        parts: Optional[Iterable[int]] = None,
+        parts: Iterable[int] | None = None,
         lang: Literal["JP", "EN"] = "JP",
     ) -> None:
         """Download a video.
@@ -408,9 +411,9 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
     async def _download_code(
         self,
         code: str,
-        download_dir: Optional[PathLike] = None,
-        quality: Optional[VideoQuality] = None,
-        progress: Optional[ProgressCallback] = None,
+        download_dir: PathLike | None = None,
+        quality: VideoQuality | None = None,
+        progress: ProgressCallback | None = None,
     ):
         resp = await self._request_video(code, quality=quality)
         await self._download(resp, download_dir=download_dir, progress=progress)
@@ -418,7 +421,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
     async def _request_video(
         self,
         code: str,
-        quality: Optional[VideoQuality] = None,
+        quality: VideoQuality | None = None,
     ) -> aiohttp.ClientResponse:
         assert self.creds is not None
         if quality is None:
@@ -434,7 +437,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
     async def download_vcz(
         self,
         fid: str,
-        download_dir: Optional[PathLike] = None,
+        download_dir: PathLike | None = None,
         progress: Optional["ProgressCallback"] = None,
     ) -> None:
         """Download a vcz.
@@ -520,8 +523,8 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
         typ: PSListType = PSListType.PURCHASES,
         lang: Literal["EN", "JP"] = "JP",
         vr: bool = True,
-        words: Optional[str] = None,
-        limit: Optional[int] = None,
+        words: str | None = None,
+        limit: int | None = None,
     ) -> AsyncIterator[PSListEntry]:
         """Iterate over videos returned by ps_get_list.
 
@@ -570,7 +573,7 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
         start: int = 0,
         page: int = 0,
         num: int = 36,
-        words: Optional[str] = None,
+        words: str | None = None,
         **kwargs,
     ) -> aiohttp.ClientResponse:
         """Return a ps_get_list results page."""

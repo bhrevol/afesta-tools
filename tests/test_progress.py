@@ -1,6 +1,5 @@
 """Test cases for the progress module."""
-from typing import Generator
-from typing import Union
+from collections.abc import Generator
 
 import pytest
 from tqdm import tqdm
@@ -26,7 +25,7 @@ def test_set_desc(pbar: PbarFixture) -> None:
 
 
 @pytest.mark.parametrize("n", [10, 10.0])
-def test_set_total(pbar: PbarFixture, n: Union[int, float]) -> None:
+def test_set_total(pbar: PbarFixture, n: int | float) -> None:
     """Callback should update pbar total."""
     progress = ProgressCallback(pbar)
     progress.set_total(n)
@@ -34,7 +33,7 @@ def test_set_total(pbar: PbarFixture, n: Union[int, float]) -> None:
 
 
 @pytest.mark.parametrize("n", [1, 1.0])
-def test_update(pbar: PbarFixture, n: Union[int, float]) -> None:
+def test_update(pbar: PbarFixture, n: int | float) -> None:
     """Callback should update pbar counter."""
     progress = ProgressCallback(pbar)
     progress.update(n)

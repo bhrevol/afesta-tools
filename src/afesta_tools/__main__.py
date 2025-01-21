@@ -4,8 +4,7 @@ import os
 from contextlib import aclosing
 from pathlib import Path
 from typing import Literal
-from typing import Optional
-from typing import Sequence
+from collections.abc import Sequence
 from typing import cast
 
 import click
@@ -51,9 +50,7 @@ def _load_credentials() -> BaseCredentials:
 @click.option(
     "-f", "--force", is_flag=True, default=False, help="Overwrite existing credentials."
 )
-def login(
-    username: Optional[str], password: Optional[str], force: bool
-) -> int:  # noqa: DAR101
+def login(username: str | None, password: str | None, force: bool) -> int:  # noqa: DAR101
     """Login to Afesta and register afesta-tools as a new player.
 
     If username and/or password are not specified, they will be prompted via the
@@ -111,7 +108,7 @@ async def _login(username: str, password: str) -> BaseCredentials:
 @click.argument("code_or_fid", nargs=-1)
 def dl(
     code_or_fid: Sequence[str],
-    quality: Optional[str],
+    quality: str | None,
     code: bool,
     lang: Literal["JP", "EN"],
 ) -> int:  # noqa: DAR101

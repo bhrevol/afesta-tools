@@ -5,10 +5,7 @@ import zipfile
 from functools import cached_property
 from typing import Any
 from typing import AsyncContextManager
-from typing import List
 from typing import Literal
-from typing import Optional
-from typing import Union
 
 from lxml import etree  # noqa: S410
 
@@ -62,11 +59,11 @@ class VCZArchive(AsyncContextManager["VCZArchive"]):
         )
 
     @cached_property
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
         """Video title."""
         return self._sys_params.findtext("title")
 
-    def namelist(self) -> List[str]:
+    def namelist(self) -> list[str]:
         """Return a list of archive members by name."""
         return list(self._name_infos.keys())
 
@@ -77,7 +74,7 @@ class VCZArchive(AsyncContextManager["VCZArchive"]):
         """Close this client."""
         self._zip.close()
 
-    def _zip_read(self, name: Union[str, zipfile.ZipInfo]) -> bytes:
+    def _zip_read(self, name: str | zipfile.ZipInfo) -> bytes:
         with self._lock:
             return self._zip.read(name)
 
@@ -114,7 +111,7 @@ class VCZArchive(AsyncContextManager["VCZArchive"]):
         self,
         typ: GoodsType,
         fmt: ScriptFormat = "csv",
-        path: Optional[PathLike] = None,
+        path: PathLike | None = None,
     ) -> str:
         """Extract the specified interlocking goods script.
 

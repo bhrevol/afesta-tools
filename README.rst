@@ -57,7 +57,7 @@ supported for 8K videos downloaded via the Afesta website.
 Requirements
 ------------
 
-* Python 3.9+
+* Python 3.10+
 * Valid Afesta account
 
 

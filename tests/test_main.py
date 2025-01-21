@@ -1,7 +1,5 @@
 """Test cases for the __main__ module."""
 from pathlib import Path
-from typing import List
-from typing import Optional
 from unittest.mock import ANY
 from unittest.mock import call
 
@@ -41,8 +39,8 @@ def test_login(
     runner: CliRunner,
     mocker: MockerFixture,
     config_dir: Path,
-    args: Optional[List[str]],
-    input: Optional[str],
+    args: list[str] | None,
+    input: str | None,
 ) -> None:
     """Should login with username/password."""
     register_player = mocker.patch.object(
