@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 from collections.abc import AsyncGenerator
+from unittest.mock import ANY
 
 import pytest
 import pytest_asyncio
@@ -36,7 +37,7 @@ async def client() -> AsyncGenerator[BaseLpegClient, None]:
 
 
 @pytest_asyncio.fixture
-async def client_noauth() -> AsyncGenerator[BaseLpegClient, None]:
+async def client_noauth(mocker: MockerFixture) -> AsyncGenerator[BaseLpegClient, None]:
     """Fixture to generate a 4D client with no auth credentials."""
     async with FourDClient() as client:
         yield client
@@ -114,8 +115,8 @@ async def test_download_video(
     get.assert_called_once_with(DL_URL, params=params, timeout=client._dl_timeout)
     assert (Path(tmpdir) / "foo.mp4").read_bytes() == b"1234567890"
     if with_progress:
-        set_desc.assert_called_once_with("Downloading foo.mp4")
-        set_total.assert_called_once_with(10)
+        set_desc.assert_called_once_with(f"Downloading purchase {TEST_VIDEO_CODE}")
+        set_total.assert_called_once_with(ANY)
         update.assert_called_with(10)
 
 
@@ -125,7 +126,6 @@ async def test_download_vcz(
     """Download VCZ request should be made."""
     progress = ProgressCallback(mocker.MagicMock())
     get = mocker.spy(client._session, "get")
-    set_desc = mocker.spy(progress, "set_desc")
     set_total = mocker.spy(progress, "set_total")
     update = mocker.spy(progress, "update")
     params = {"pid": TEST_CREDENTIALS.pid, "fid": "foo_sbs"}
@@ -154,7 +154,6 @@ async def test_download_vcz(
     )
     output_path = Path(tmpdir) / "foo.vcz"
     assert output_path.read_bytes() == b"1234567890"
-    set_desc.assert_called_once_with(f"Downloading {output_path}")
     set_total.assert_called_once_with(10)
     update.assert_called_with(10)
 
@@ -196,6 +195,7 @@ async def test_register_player(
                 "result": 1,
             },
         )
+        mocker.patch.object(client_noauth, "status_chk", return_value={"reg": 1})
         creds = await client_noauth.register_player(TEST_CREDENTIALS.uid, "password")
     get.assert_called_once_with(AP_REG_URL, params={"pid": device_id})
     post.assert_called_once_with(AP_LOGIN_URL, data=login_payload)

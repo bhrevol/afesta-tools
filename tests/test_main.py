@@ -76,7 +76,10 @@ def test_dl(
     dump_credentials(TEST_CREDENTIALS)
     runner.invoke(__main__.dl, ["foo", "bar"])
     download_video.assert_has_calls(
-        [call("foo", progress=ANY), call("bar", progress=ANY)],
+        [
+            call(fid="foo", lang="JP", progress=ANY),
+            call(fid="bar", lang="JP", progress=ANY),
+        ],
         any_order=True,
     )
 

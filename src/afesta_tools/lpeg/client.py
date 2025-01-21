@@ -315,11 +315,11 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
             filename = os.path.join(download_dir, filename)
         if progress:
             if "Content-Length" in response.headers:  # pragma: no cover
-                progress.inc_total(int(response.headers["Content-Length"]))
+                progress.set_total(int(response.headers["Content-Length"]))
         with open(filename, mode="wb") as fp:
             async for chunk in response.content.iter_chunked(self.CHUNK_SIZE):
                 fp.write(chunk)
-                if progress:
+                if progress is not None:
                     progress.update(len(chunk))
 
     @require_auth
@@ -394,7 +394,8 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
                 desc_parts = f" ({len(codes)} parts)"
             desc = f"Downloading {video.get_fid()}: {video.title}{desc_parts}"
 
-        progress.set_desc(desc)
+        if progress is not None:
+            progress.set_desc(desc)
         results = await asyncio.gather(
             *(
                 self._download_code(
@@ -509,9 +510,9 @@ class BaseLpegClient(AsyncContextManager["BaseLpegClient"]):
             raise AuthenticationError("Login failed.") from exc
         if result.get("result", 0) != 1:
             raise AuthenticationError("Login failed.")
+        self.creds = self.new_credentials(uid=username, st=st, mid=mid, pid=pid)
         if (await self.status_chk()).get("reg", 0) != 1:
             raise AuthenticationError("Player registration failed.")
-        self.creds = self.new_credentials(uid=username, st=st, mid=mid, pid=pid)
         return self.creds
 
     @abstractmethod
