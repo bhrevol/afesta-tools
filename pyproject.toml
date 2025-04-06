@@ -13,7 +13,7 @@ dependencies = [
     "aiohttp>=3.11.11",
     "platformdirs>=4.3.6",
     "lxml>=5.3.0",
-    "a10sa-script>=0.2.0",
+    "a10sa-script>=1.0.1",
 ]
 name = "afesta-tools"
 description = "Afesta Tools"

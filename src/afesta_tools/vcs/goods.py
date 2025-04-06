@@ -91,5 +91,5 @@ def convert_script(script: GoodsScript, fmt: ScriptFormat) -> ConvertedScript:
         if fmt == "csv":
             return VorzeLinearScript(script.commands)
         if fmt == "funscript":
-            return FunscriptScript(script.commands)
+            return FunscriptScript.from_vorze(script)
     raise ValueError(f"Unable to convert {script} to format {fmt}")
