@@ -3,14 +3,16 @@ import os
 import threading
 import zipfile
 from functools import cached_property
+from tempfile import TemporaryFile
 from typing import Any
 from typing import AsyncContextManager
-from typing import Literal
+from typing import Literal, cast
 
 from lxml import etree  # noqa: S410
 
 from ..types import PathLike
 from ..utils import to_thread
+from .chapter import ChapterControl
 from .goods import GoodsScript
 from .goods import GoodsType
 from .goods import ScriptFormat
@@ -41,8 +43,8 @@ class VCZArchive(AsyncContextManager["VCZArchive"]):
             raise ValueError(f"{filename} has no VCS system params")
         self._sys_params = sys_params
         names = self._zip.namelist()
-        self._name_infos = {
-            element.tag: element.text
+        self._name_infos: dict[str, str] = {
+            cast(str, element.tag): element.text
             for element in self._sys_params
             if element.text in names
         }
@@ -62,6 +64,21 @@ class VCZArchive(AsyncContextManager["VCZArchive"]):
     def title(self) -> str | None:
         """Video title."""
         return self._sys_params.findtext("title")
+
+    async def chapter_control(self) -> ChapterControl | None:
+        """Chapters."""
+        if "ChapterControl" not in self._name_infos:
+            return None
+        parser = etree.XMLParser(resolve_entities=False)
+        with TemporaryFile() as f:
+            f.write(await self.read("ChapterControl"))
+            f.seek(0)
+            zipf = zipfile.ZipFile(f)
+            data = await to_thread(zipf.read, "params.xml")
+        params = etree.fromstring(  # noqa: S320
+            data, parser=parser
+        )
+        return ChapterControl.from_xml(params)
 
     def namelist(self) -> list[str]:
         """Return a list of archive members by name."""
