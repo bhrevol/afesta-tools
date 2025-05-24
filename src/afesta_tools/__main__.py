@@ -311,5 +311,141 @@ async def _list(
                     click.echo(f"{video.get_fid()}: {video.title}")
 
 
+@cli.command()
+@click.argument(
+    "filename",
+    nargs=-1,
+    type=click.Path(exists=True, dir_okay=False, readable=True, path_type=Path),
+)
+@click.option(
+    "-f", "--force", is_flag=True, default=False, help="Overwrite existing files."
+)
+@click.option(
+    "-n",
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="Only print actions which would be taken.",
+)
+@click.option(
+    "--video/--no-video", default=True, help="Enable or disable video concatenation."
+)
+@click.option(
+    "--script/--no-script", default=True, help="Enable or disable script extraction."
+)
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["csv", "funscript", "vcsx"], case_sensitive=False),
+    default=["vcsx", "funscript"],
+    multiple=True,
+    help=(
+        "Script format (defaults to VCSX + funscript)."
+        " --format can be specified multiple times to extract multiple formats."
+    ),
+)
+@click.option("-o", "--output-dir", type=click.Path(file_okay=False, path_type=Path))
+def concat(
+    filename: Sequence[Path],
+    force: bool,
+    dry_run: bool,
+    script: bool,
+    video: bool,
+    fmt: Sequence[Literal["csv", "vcsx", "funscript"]],
+    output_dir: Path | None,
+) -> int:  # noqa: DAR101
+    """Concatenate multipart Afesta videos.
+
+    <filename> should be a path a VCZ file for the first part of the video.
+    Video and/or VCZ files for all parts of the video must be present in the same
+    directory as <filename>.
+    """
+    for path in filename:
+        try:
+            asyncio.run(
+                _concat_one(path, force, dry_run, script, video, fmt, output_dir)
+            )
+        except (AfestaError, OSError) as exc:
+            click.echo(str(exc), err=True)
+    return 0
+
+
+async def _concat_one(
+    filename: Path,
+    force: bool,
+    dry_run: bool,
+    extract_script: bool,
+    concat_video: bool,
+    script_format: Sequence[Literal["csv", "vcsx", "funscript"]],
+    output_dir: Path | None,
+) -> None:
+    from .utils import ffmpeg_concat, script_concat
+    from .vcs import VCZArchive
+
+    async with VCZArchive(filename) as vcz:
+        chapters = await vcz.chapter_control()
+        if not chapters:
+            click.echo(f"{filename} is not a multipart VCZ")
+            return
+        if concat_video:
+            try:
+                output = await ffmpeg_concat(
+                    filename,
+                    chapters,
+                    dry_run=dry_run,
+                    force=force,
+                    output_dir=output_dir,
+                )
+                click.echo(f"Concatenated video {output}")
+            except (FileExistsError, ValueError) as e:
+                click.echo(f"Skipped video concat for {filename}: {e}")
+        if extract_script:
+            try:
+                await script_concat(
+                    filename,
+                    chapters,
+                    script_format,
+                    dry_run=dry_run,
+                    force=force,
+                    output_dir=output_dir,
+                )
+                click.echo("Concatenated scripts")
+            except (AfestaError, FileExistsError, ValueError) as e:
+                click.echo(f"Skipped script concat for {filename}: {e}")
+
+
+@cli.command()
+@click.argument(
+    "filename",
+    nargs=-1,
+    type=click.Path(exists=True, dir_okay=False, readable=True, path_type=Path),
+)
+@click.option("-f", "--force", is_flag=True, default=False)
+def ffmeta(
+    filename: Sequence[Path],
+    force: bool,
+) -> None:  # noqa: DAR101
+    """Dump ffmeta for a VCZ file."""
+    for path in filename:
+        try:
+            asyncio.run(_ffmeta_one(path, force=force))
+        except (AfestaError, OSError) as exc:
+            click.echo(f"Failed to dump metadata: {exc}", err=True)
+
+
+async def _ffmeta_one(filename: Path, force: bool) -> None:
+    from .vcs import VCZArchive
+
+    async with VCZArchive(filename) as vcz:
+        chapters = await vcz.chapter_control()
+        if not chapters:
+            return
+        output = filename.parent / f"{filename.stem}.ffmeta"
+        if force or not output.exists():
+            with open(output, "w") as f:
+                chapters.dump_ffmetadata(f)
+            click.echo(f"Dumped ffmpeg metadata to {output}")
+
+
 if __name__ == "__main__":
     cli(prog_name="afesta")  # pragma: no cover
