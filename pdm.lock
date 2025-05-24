@@ -5,7 +5,7 @@
 groups = ["default", "coverage", "docs", "lint", "mypy", "safety", "tests", "typeguard", "xdoctest"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:9fdc2658fe1e517b6cd3fc20aabbf4dcf7e224ec5bcd3cc720e157c599469acf"
+content_hash = "sha256:71e37ff1d0bcad4cc41aaf680fe15a7c549e178ce014e7075eab99c7fb3ebc41"
 
 [[metadata.targets]]
 requires_python = "~=3.10"
@@ -248,7 +248,7 @@ name = "beautifulsoup4"
 version = "4.13.3"
 requires_python = ">=3.7.0"
 summary = "Screen-scraping library"
-groups = ["docs"]
+groups = ["docs", "mypy"]
 dependencies = [
     "soupsieve>1.2",
     "typing-extensions>=4.0.0",
@@ -635,6 +635,17 @@ files = [
 ]
 
 [[package]]
+name = "cssselect"
+version = "1.3.0"
+requires_python = ">=3.9"
+summary = "cssselect parses CSS3 Selectors and translates them to XPath 1.0"
+groups = ["mypy"]
+files = [
+    {file = "cssselect-1.3.0-py3-none-any.whl", hash = "sha256:56d1bf3e198080cc1667e137bc51de9cadfca259f03c2d4e09037b3e01e30f0d"},
+    {file = "cssselect-1.3.0.tar.gz", hash = "sha256:57f8a99424cfab289a1b6a816a43075a4b00948c86b4dcf3ef4ee7e15f7ab0c7"},
+]
+
+[[package]]
 name = "distlib"
 version = "0.3.9"
 summary = "Distribution utilities"
@@ -1000,16 +1011,6 @@ files = [
     {file = "lxml-5.3.2-pp310-pypy310_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:ea0c3b7922209160faef194a5b6995bfe7fa05ff7dda6c423ba17646b7b9de10"},
     {file = "lxml-5.3.2-pp310-pypy310_pp73-win_amd64.whl", hash = "sha256:0a006390834603e5952a2ff74b9a31a6007c7cc74282a087aa6467afb4eea987"},
     {file = "lxml-5.3.2.tar.gz", hash = "sha256:773947d0ed809ddad824b7b14467e1a481b8976e87278ac4a730c2f7c7fcddc1"},
-]
-
-[[package]]
-name = "lxml-stubs"
-version = "0.5.1"
-summary = "Type annotations for the lxml package"
-groups = ["mypy"]
-files = [
-    {file = "lxml-stubs-0.5.1.tar.gz", hash = "sha256:e0ec2aa1ce92d91278b719091ce4515c12adc1d564359dfaf81efa7d4feab79d"},
-    {file = "lxml_stubs-0.5.1-py3-none-any.whl", hash = "sha256:1f689e5dbc4b9247cb09ae820c7d34daeb1fdbd1db06123814b856dae7787272"},
 ]
 
 [[package]]
@@ -1925,7 +1926,7 @@ name = "soupsieve"
 version = "2.6"
 requires_python = ">=3.8"
 summary = "A modern CSS selector implementation for Beautiful Soup."
-groups = ["docs"]
+groups = ["docs", "mypy"]
 files = [
     {file = "soupsieve-2.6-py3-none-any.whl", hash = "sha256:e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9"},
     {file = "soupsieve-2.6.tar.gz", hash = "sha256:e2e68417777af359ec65daac1057404a3c8a5455bb8abc36f1a9866ab1a51abb"},
@@ -2188,6 +2189,34 @@ dependencies = [
 files = [
     {file = "typer-0.15.2-py3-none-any.whl", hash = "sha256:46a499c6107d645a9c13f7ee46c5d5096cae6f5fc57dd11eccbbb9ae3e44ddfc"},
     {file = "typer-0.15.2.tar.gz", hash = "sha256:ab2fab47533a813c49fe1f16b1a370fd5819099c00b119e0633df65f22144ba5"},
+]
+
+[[package]]
+name = "types-html5lib"
+version = "1.1.11.20250516"
+requires_python = ">=3.9"
+summary = "Typing stubs for html5lib"
+groups = ["mypy"]
+files = [
+    {file = "types_html5lib-1.1.11.20250516-py3-none-any.whl", hash = "sha256:5e407b14b1bd2b9b1107cbd1e2e19d4a0c46d60febd231c7ab7313d7405663c1"},
+    {file = "types_html5lib-1.1.11.20250516.tar.gz", hash = "sha256:65043a6718c97f7d52567cc0cdf41efbfc33b1f92c6c0c5e19f60a7ec69ae720"},
+]
+
+[[package]]
+name = "types-lxml"
+version = "2025.3.30"
+requires_python = ">=3.8"
+summary = "Complete lxml external type annotation"
+groups = ["mypy"]
+dependencies = [
+    "beautifulsoup4~=4.13",
+    "cssselect~=1.2",
+    "types-html5lib~=1.1.11.20241018",
+    "typing-extensions~=4.10; python_version < \"3.13\"",
+]
+files = [
+    {file = "types_lxml-2025.3.30-py3-none-any.whl", hash = "sha256:310b0ddf9e2104c8684362445808adf8a2cf41cf102d4ea0d16ced413cc46f66"},
+    {file = "types_lxml-2025.3.30.tar.gz", hash = "sha256:ea4da0d2b61a73e114e14e2dcca1f62671182d80016a483369c553a24ba8f163"},
 ]
 
 [[package]]
