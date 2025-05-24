@@ -30,7 +30,7 @@
       "matchPackagePatterns": [
         "Pygments",
         "coverage",
-        "pytest",
+        "pytest"
       ],
       "groupName": "tests",
       "extends": ["schedule:weekly"]
