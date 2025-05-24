@@ -48,6 +48,9 @@ Features
   purchases/permissions)
 * Download and extract interlocking goods scripts from Afesta vcz archives
   (supports extracting scripts in both Vorze CSV and Funscript formats)
+* Concatenate multipart (-R1, R2, ...) videos into a single video file
+  (also supports concatenating interlocking goods scripts). Requires ffmpeg
+  installation.
 
 Note: 8K downloads are not currently supported, as 4D Media Player only downloads
 the 4K version for 8K videos. Interlocking goods vcz download and extraction are
@@ -179,6 +182,31 @@ Extract CSV scripts from vcz archives:
     ├── PRVR-050-Takumi-R3_sbs_cyclone.csv
     ├── PRVR-050-Takumi-R3_sbs_onarhythm.csv
     └── PRVR-050-Takumi-R3_sbs_piston.csv
+
+Concatenate multipart (-R1, -R2, ...) video into a single video file and also
+extract concatenated CSV and funscript scripts for the single video
+(note that concat requires all video files and all VCZ files):
+
+.. code:: console
+
+    $ afesta dl-vcz PRVR-050-Takumi-*.mp4
+    $ afesta concat --format csv --format funscript PRVR-050-Takumi-R1.vcz
+    ...
+
+    $ tree .
+    .
+    ├── PRVR-050-Takumi_sbs.mp4
+    ├── PRVR-050-Takumi_sbs.funscript
+    ├── PRVR-050-Takumi_sbs_cyclone.csv
+    ├── PRVR-050-Takumi_sbs_onarhythm.csv
+    ├── PRVR-050-Takumi_sbs_piston.csv
+    ├── PRVR-050-Takumi-R1_sbs.mp4
+    ├── PRVR-050-Takumi-R1_sbs.vcz
+    ├── PRVR-050-Takumi-R2_sbs.mp4
+    ├── PRVR-050-Takumi-R2_sbs.vcz
+    ├── PRVR-050-Takumi-R3_sbs.mp4
+    └── PRVR-050-Takumi-R3_sbs.vcz
+
 
 Please see the `Command-line Reference <Usage_>`_ for details.
 
