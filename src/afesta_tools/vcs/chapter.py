@@ -1,3 +1,4 @@
+import copy
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -51,13 +52,17 @@ class ChapterControl:
         scenes = [Scene.from_xml(scene) for scene in e.iterfind(".//scene")]
         return cls(scenes=scenes)
 
-    def dump_ffmetadata(self, f: TextIO) -> None:
+    async def dump_ffmetadata(self, f: TextIO, absolute=True) -> None:
         lines = [";FFMETADATA1"]
-        for i, scene in enumerate(self.scenes):
-            if i + 1 >= len(self.scenes):
+        if absolute:
+            scenes = await self.absolute_scenes()
+        else:
+            scenes = self.scenes
+        for i, scene in enumerate(scenes):
+            if i + 1 >= len(scenes):
                 end = scene.time + scene.duration
             else:
-                end = self.scenes[i + 1].time - 1
+                end = scenes[i + 1].time - 1
             lines.extend(
                 [
                     "[CHAPTER]",
@@ -70,9 +75,9 @@ class ChapterControl:
         f.write(os.linesep.join(lines))
 
     async def file_offsets(self, dir: str | Path | None = None) -> dict[str, int]:
+        """Returns relative offsets for external VCZ files."""
         from .archive import VCZArchive
 
-        """Returns relative offsets for external VCZ files."""
         workdir = Path(dir) if dir is not None else Path.cwd()
         offsets = {}
         for i, scene in enumerate(self.scenes):
@@ -91,3 +96,33 @@ class ChapterControl:
                         raise ValueError("external scene not found") from e
                 offsets[scene.file] = scene.time - theirs.time
         return offsets
+
+    async def absolute_scenes(self, dir: str | Path | None = None) -> list[Scene]:
+        """Returns list of scenes with absolute time offsets.
+
+        By default vcs chapter start `time` values are approximated to allow rendering
+        a relatively accurate progess/playback bar without needing to load the external
+        video or archive. This loads the external archive and returns a scene list with
+        correct times according to the external archive (which may not exactly match the
+        video file since archive times are rounded to ms).
+        """
+        from .archive import VCZArchive
+
+        workdir = Path(dir) if dir is not None else Path.cwd()
+        scenes = copy.deepcopy(self.scenes)
+        for i, scene in enumerate(scenes):
+            if scene.name:
+                continue
+            if scene.file:
+                if not scene.goto:
+                    raise ValueError("external scene with no goto reference")
+                async with VCZArchive(workdir / f"{scene.file}.vcz") as vcz:
+                    chapters = await vcz.chapter_control()
+                    if not chapters:
+                        raise ValueError("external chapters found")
+                    try:
+                        theirs = chapters.scenes[i]
+                    except IndexError as e:
+                        raise ValueError("external scene not found") from e
+                scene.time -= theirs.time
+        return scenes

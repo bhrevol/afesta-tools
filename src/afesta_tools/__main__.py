@@ -443,7 +443,7 @@ async def _ffmeta_one(filename: Path, force: bool) -> None:
         output = filename.parent / f"{filename.stem}.ffmeta"
         if force or not output.exists():
             with open(output, "w") as f:
-                chapters.dump_ffmetadata(f)
+                await chapters.dump_ffmetadata(f)
             click.echo(f"Dumped ffmpeg metadata to {output}")
 
 

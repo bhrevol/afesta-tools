@@ -2,6 +2,7 @@
 import asyncio
 import contextvars
 import functools
+import os
 import re
 import shutil
 import tempfile
@@ -68,30 +69,23 @@ async def ffmpeg_concat(
     if not dry_run:
         with tempfile.TemporaryDirectory(dir=src_dir) as temp:
             tmpdir = Path(temp)
-            for i, part in enumerate(parts):
-                process = await asyncio.create_subprocess_exec(
-                    "ffmpeg",
-                    "-y",
-                    "-i",
-                    str(part),
-                    "-c",
-                    "copy",
-                    str(tmpdir / f"{i}.ts"),
-                )
-                await process.wait()
-                if not process.returncode == 0:
-                    raise AfestaError("ffmpeg failed to convert part .ts")
+            concat_file = tmpdir / "concat.txt"
+            with open(concat_file, "w") as f:
+                f.writelines(f"file '{part}'{os.linesep}" for part in parts)
 
             meta_file = tmpdir / "chapters.ffmeta"
             with open(meta_file, "w") as f:
-                chapters.dump_ffmetadata(f)
+                await chapters.dump_ffmetadata(f, absolute=False)
             tmp_output = tmpdir / f"{filename}.mp4"
-            concat_parts = "|".join(str(tmpdir / f"{i}.ts") for i in range(len(parts)))
             process = await asyncio.create_subprocess_exec(
                 "ffmpeg",
                 "-y",
+                "-f",
+                "concat",
+                "-safe",
+                "0",
                 "-i",
-                f"concat:{concat_parts}",
+                str(concat_file),
                 "-i",
                 str(meta_file),
                 "-map_metadata",
