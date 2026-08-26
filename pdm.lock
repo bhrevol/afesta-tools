@@ -4,7 +4,7 @@
 [metadata]
 groups = ["default", "coverage", "docs", "lint", "mypy", "safety", "tests", "typeguard", "xdoctest"]
 strategy = ["inherit_metadata"]
-lock_version = "4.5.0"
+lock_version = "4.5.1"
 content_hash = "sha256:f3cddabebf7157cad2b7f5081d31a65229f0a6615d7ead880cb2025269bc330b"
 
 [[metadata.targets]]
@@ -287,17 +287,17 @@ files = [
 
 [[package]]
 name = "beautifulsoup4"
-version = "4.13.4"
+version = "4.15.0"
 requires_python = ">=3.7.0"
 summary = "Screen-scraping library"
 groups = ["docs", "mypy"]
 dependencies = [
-    "soupsieve>1.2",
+    "soupsieve>=1.6.1",
     "typing-extensions>=4.0.0",
 ]
 files = [
-    {file = "beautifulsoup4-4.13.4-py3-none-any.whl", hash = "sha256:9bbbb14bfde9d79f38b8cd5f8c7c85f4b8f2523190ebed90e950a8dea4cb1c4b"},
-    {file = "beautifulsoup4-4.13.4.tar.gz", hash = "sha256:dbb3c4e1ceae6aefebdaf2423247260cd062430a410e38c66f2baa50a8437195"},
+    {file = "beautifulsoup4-4.15.0-py3-none-any.whl", hash = "sha256:d6f88de62e1d4e38ecb1077eb9724cd0eff29d2a08ca16a401e9b9e93f117cf9"},
+    {file = "beautifulsoup4-4.15.0.tar.gz", hash = "sha256:288e3ca7d54b06f2ac191970bc275c1939cb46d450b255bf6718b04aa37ab4f7"},
 ]
 
 [[package]]
@@ -730,13 +730,13 @@ files = [
 
 [[package]]
 name = "cssselect"
-version = "1.3.0"
-requires_python = ">=3.9"
+version = "1.5.0"
+requires_python = ">=3.10"
 summary = "cssselect parses CSS3 Selectors and translates them to XPath 1.0"
 groups = ["mypy"]
 files = [
-    {file = "cssselect-1.3.0-py3-none-any.whl", hash = "sha256:56d1bf3e198080cc1667e137bc51de9cadfca259f03c2d4e09037b3e01e30f0d"},
-    {file = "cssselect-1.3.0.tar.gz", hash = "sha256:57f8a99424cfab289a1b6a816a43075a4b00948c86b4dcf3ef4ee7e15f7ab0c7"},
+    {file = "cssselect-1.5.0-py3-none-any.whl", hash = "sha256:1d1aded98e82bdde447ded990a191fd6916177c4f0c914fb62eccd58e2ffcdcc"},
+    {file = "cssselect-1.5.0.tar.gz", hash = "sha256:3cbe82dd7acbee9ba9e5723b5f9e4749826912f1fb31cd7f92aabed5fde15b15"},
 ]
 
 [[package]]
@@ -2114,13 +2114,13 @@ files = [
 
 [[package]]
 name = "soupsieve"
-version = "2.7"
-requires_python = ">=3.8"
+version = "2.9.2"
+requires_python = ">=3.10"
 summary = "A modern CSS selector implementation for Beautiful Soup."
 groups = ["docs", "mypy"]
 files = [
-    {file = "soupsieve-2.7-py3-none-any.whl", hash = "sha256:6e60cc5c1ffaf1cebcc12e8188320b72071e922c2e897f737cadce79ad5d30c4"},
-    {file = "soupsieve-2.7.tar.gz", hash = "sha256:ad282f9b6926286d2ead4750552c8a6142bc4c783fd66b0293547c8fe6ae126a"},
+    {file = "soupsieve-2.9.2-py3-none-any.whl", hash = "sha256:8089a26fd974ca7a1f30276d3d8492ab266ab15af581642dfe8aa162e0c1c823"},
+    {file = "soupsieve-2.9.2.tar.gz", hash = "sha256:4a55d8cf158a9c2e587fa4922f1bbb91d68ac829e2d6f25403a85747c71daf74"},
 ]
 
 [[package]]
@@ -2406,41 +2406,55 @@ files = [
 
 [[package]]
 name = "types-html5lib"
-version = "1.1.11.20250516"
-requires_python = ">=3.9"
+version = "1.1.11.20260518"
+requires_python = ">=3.10"
 summary = "Typing stubs for html5lib"
 groups = ["mypy"]
+dependencies = [
+    "types-webencodings",
+]
 files = [
-    {file = "types_html5lib-1.1.11.20250516-py3-none-any.whl", hash = "sha256:5e407b14b1bd2b9b1107cbd1e2e19d4a0c46d60febd231c7ab7313d7405663c1"},
-    {file = "types_html5lib-1.1.11.20250516.tar.gz", hash = "sha256:65043a6718c97f7d52567cc0cdf41efbfc33b1f92c6c0c5e19f60a7ec69ae720"},
+    {file = "types_html5lib-1.1.11.20260518-py3-none-any.whl", hash = "sha256:9baa7912224ebb37027c5ccb7e3768e43ea47b1dfdd977e7ddc4b0a4a550584d"},
+    {file = "types_html5lib-1.1.11.20260518.tar.gz", hash = "sha256:4f33c087cb1119d65c4c80eca4323c2b501f9eaf8af9616b8b732ed4d8eae8fa"},
 ]
 
 [[package]]
 name = "types-lxml"
-version = "2025.3.30"
-requires_python = ">=3.8"
+version = "2026.2.16"
+requires_python = ">=3.9"
 summary = "Complete lxml external type annotation"
 groups = ["mypy"]
 dependencies = [
     "beautifulsoup4~=4.13",
     "cssselect~=1.2",
-    "types-html5lib~=1.1.11.20241018",
-    "typing-extensions~=4.10; python_version < \"3.13\"",
+    "types-html5lib~=1.1.11.20250809",
+    "typing-extensions~=4.15",
 ]
 files = [
-    {file = "types_lxml-2025.3.30-py3-none-any.whl", hash = "sha256:310b0ddf9e2104c8684362445808adf8a2cf41cf102d4ea0d16ced413cc46f66"},
-    {file = "types_lxml-2025.3.30.tar.gz", hash = "sha256:ea4da0d2b61a73e114e14e2dcca1f62671182d80016a483369c553a24ba8f163"},
+    {file = "types_lxml-2026.2.16-py3-none-any.whl", hash = "sha256:5dd81ffa54830e5f361988737c5f1d6a0ae48b2742790637ec560df790ea0401"},
+    {file = "types_lxml-2026.2.16.tar.gz", hash = "sha256:b3a1340cc06db98d541c785732f6f68bea438daff4e2b7809ef748d545d01406"},
+]
+
+[[package]]
+name = "types-webencodings"
+version = "0.6.0.20260826"
+requires_python = ">=3.10"
+summary = "Typing stubs for webencodings"
+groups = ["mypy"]
+files = [
+    {file = "types_webencodings-0.6.0.20260826-py3-none-any.whl", hash = "sha256:f2fd1c5cb45fc196b6dcb9852ca5a5d1bce48802c1190c5dad0233983b699859"},
+    {file = "types_webencodings-0.6.0.20260826.tar.gz", hash = "sha256:55ad82cd1c10d0dd3824e2fc779666a44375c61348a7f0939825af79994c0d69"},
 ]
 
 [[package]]
 name = "typing-extensions"
-version = "4.14.1"
+version = "4.16.0"
 requires_python = ">=3.9"
 summary = "Backported and Experimental Type Hints for Python 3.9+"
 groups = ["default", "docs", "lint", "mypy", "safety", "tests", "typeguard"]
 files = [
-    {file = "typing_extensions-4.14.1-py3-none-any.whl", hash = "sha256:d1e1e3b58374dc93031d6eda2420a48ea44a36c2b4766a4fdeb3710755731d76"},
-    {file = "typing_extensions-4.14.1.tar.gz", hash = "sha256:38b39f4aeeab64884ce9f74c94263ef78f3c22467c8724005483154c26648d36"},
+    {file = "typing_extensions-4.16.0-py3-none-any.whl", hash = "sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"},
+    {file = "typing_extensions-4.16.0.tar.gz", hash = "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"},
 ]
 
 [[package]]
