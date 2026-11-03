@@ -20,10 +20,9 @@ TEST_CREDENTIALS = FourDCredentials(TEST_UID, TEST_ST, TEST_MID, TEST_PID)
 @pytest.fixture
 def mock_registry(mocker: MockerFixture) -> None:
     """Fixture which mocks Windows registry using fake_winreg."""
-    from fake_winreg import fake_reg_tools
-    from fake_winreg import fake_winreg
+    import fake_winreg
 
-    fake_registry = fake_reg_tools.get_minimal_windows_testregistry()
+    fake_registry = fake_winreg.fake_reg_tools.get_minimal_windows_testregistry()
     fake_winreg.load_fake_registry(fake_registry)
 
     try:
@@ -35,16 +34,15 @@ def mock_registry(mocker: MockerFixture) -> None:
 
 def test_fourd_user_reg_values(mock_registry: Any) -> None:
     """Test that registry values are loaded properly."""
-    from fake_winreg import fake_winreg
-    from fake_winreg import registry_constants
+    import fake_winreg
 
-    reg_sz = registry_constants.REG_SZ
+    reg_sz = fake_winreg.REG_SZ
 
     with pytest.raises(NoCredentialsError):
         FourDCredentials._get_user_reg_values()
 
     with fake_winreg.CreateKey(
-        registry_constants.HKEY_CURRENT_USER, FourDCredentials.WINREG_KEY
+        fake_winreg.HKEY_CURRENT_USER, FourDCredentials.WINREG_KEY
     ) as key:
         fake_winreg.SetValueEx(key, "login_account_123", 0, reg_sz, TEST_UID)
         fake_winreg.SetValueEx(key, "mid_123", 0, reg_sz, TEST_MID)

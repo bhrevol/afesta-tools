@@ -5,7 +5,7 @@
 groups = ["default", "coverage", "docs", "lint", "mypy", "safety", "tests", "typeguard", "xdoctest"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.1"
-content_hash = "sha256:bbe68791aece1037ad7635b046efcb4b25f381e3ccc50af1f7da252355906ff7"
+content_hash = "sha256:3578c5bd5d2f2d8668f9e73e619ae3fd68270ea7ec3c18e88fd7436d07a89d3e"
 
 [[metadata.targets]]
 requires_python = "~=3.11"
@@ -260,7 +260,7 @@ name = "annotated-types"
 version = "0.7.0"
 requires_python = ">=3.8"
 summary = "Reusable constraint types to use with typing.Annotated"
-groups = ["default", "safety"]
+groups = ["default", "safety", "tests"]
 dependencies = [
     "typing-extensions>=4.0.0; python_version < \"3.9\"",
 ]
@@ -570,7 +570,7 @@ name = "click"
 version = "8.5.0"
 requires_python = ">=3.10"
 summary = "Composable command line interface toolkit"
-groups = ["default", "docs", "safety"]
+groups = ["default", "docs", "safety", "tests"]
 files = [
     {file = "click-8.5.0-py3-none-any.whl", hash = "sha256:255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360"},
     {file = "click-8.5.0.tar.gz", hash = "sha256:ba0d2089de75ea0310e2dde03160e6ca10009947fb95a182f9b54021bb272e34"},
@@ -948,7 +948,7 @@ name = "fake-winreg"
 version = "1.10.3"
 requires_python = ">=3.10"
 summary = "A fake Windows registry for testing registry-related code on non-Windows platforms"
-groups = ["default"]
+groups = ["default", "tests"]
 dependencies = [
     "click>=8.5.0",
     "lib-cli-exit-tools>=2.4.1",
@@ -1216,7 +1216,7 @@ name = "lib-cli-exit-tools"
 version = "2.4.1"
 requires_python = ">=3.10"
 summary = "CLI exit handling helpers: clean signals, exit codes, and error printing"
-groups = ["default"]
+groups = ["default", "tests"]
 dependencies = [
     "rich-click>=1.9.9",
 ]
@@ -1230,7 +1230,7 @@ name = "lib-layered-config"
 version = "7.7.0"
 requires_python = ">=3.10"
 summary = "Cross-platform layered configuration loader for Python"
-groups = ["default"]
+groups = ["default", "tests"]
 dependencies = [
     "lib-cli-exit-tools>=2.4.1",
     "orjson>=3.13.0; python_version < \"3.14\"",
@@ -1248,7 +1248,7 @@ name = "lib-log-rich"
 version = "8.1.2"
 requires_python = ">=3.10"
 summary = "Rich-powered logging runtime with contextual metadata, multi-sink fan-out, and ring-buffer dumps"
-groups = ["default"]
+groups = ["default", "tests"]
 dependencies = [
     "lib-cli-exit-tools>=2.4.1",
     "orjson>=3.13.0; python_version < \"3.14\"",
@@ -1536,7 +1536,7 @@ name = "markdown-it-py"
 version = "3.0.0"
 requires_python = ">=3.8"
 summary = "Python port of markdown-it. Markdown parsing, done right!"
-groups = ["default", "safety"]
+groups = ["default", "safety", "tests"]
 dependencies = [
     "mdurl~=0.1",
 ]
@@ -1625,7 +1625,7 @@ name = "mdurl"
 version = "0.1.2"
 requires_python = ">=3.7"
 summary = "Markdown URL utilities"
-groups = ["default", "safety"]
+groups = ["default", "safety", "tests"]
 files = [
     {file = "mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
     {file = "mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba"},
@@ -1843,7 +1843,7 @@ name = "orjson"
 version = "3.13.0"
 requires_python = ">=3.10"
 summary = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
-groups = ["default"]
+groups = ["default", "tests"]
 files = [
     {file = "orjson-3.13.0-cp311-cp311-macosx_10_15_x86_64.macosx_11_0_arm64.macosx_10_15_universal2.whl", hash = "sha256:948bad47f2e2e43527f14248364a0e5dee26dd3184691010ec4a1ebeb0fd6771"},
     {file = "orjson-3.13.0-cp311-cp311-macosx_15_0_arm64.whl", hash = "sha256:1807c2fa49d393c7ee95fd1ef1b39cbb24aa3ccd81f30b84503ba59407666960"},
@@ -2068,7 +2068,7 @@ name = "pydantic"
 version = "2.14.2"
 requires_python = ">=3.10"
 summary = "Data validation using Python type hints"
-groups = ["default", "safety"]
+groups = ["default", "safety", "tests"]
 dependencies = [
     "annotated-types>=0.6.0",
     "pydantic-core==2.50.2",
@@ -2085,7 +2085,7 @@ name = "pydantic-core"
 version = "2.50.2"
 requires_python = ">=3.10"
 summary = "Core functionality for Pydantic validation and serialization"
-groups = ["default", "safety"]
+groups = ["default", "safety", "tests"]
 dependencies = [
     "typing-extensions>=4.16.0",
 ]
@@ -2277,7 +2277,7 @@ name = "python-dotenv"
 version = "1.2.4"
 requires_python = ">=3.10"
 summary = "Read key-value pairs from a .env file and set them as environment variables"
-groups = ["default"]
+groups = ["default", "tests"]
 files = [
     {file = "python_dotenv-1.2.4-py3-none-any.whl", hash = "sha256:42269a8a5b3fd54ffa6f3d84b18abed50064717576b4ecf03dc4a55d8aa04fdc"},
     {file = "python_dotenv-1.2.4.tar.gz", hash = "sha256:f0d53e69935a851c0dcc78f3ab7aaccd8cabef0b92382b576b824212902873c0"},
@@ -2436,7 +2436,7 @@ name = "rich"
 version = "15.0.0"
 requires_python = ">=3.9.0"
 summary = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
-groups = ["default", "safety"]
+groups = ["default", "safety", "tests"]
 dependencies = [
     "markdown-it-py>=2.2.0",
     "pygments<3.0.0,>=2.13.0",
@@ -2451,7 +2451,7 @@ name = "rich-click"
 version = "1.9.9"
 requires_python = ">=3.8"
 summary = "Format click help output nicely with rich"
-groups = ["default"]
+groups = ["default", "tests"]
 dependencies = [
     "click>=8",
     "colorama; platform_system == \"Windows\"",
@@ -2479,7 +2479,7 @@ name = "rtoml"
 version = "0.14.0"
 requires_python = ">=3.10"
 summary = "A TOML library for python implemented in rust."
-groups = ["default"]
+groups = ["default", "tests"]
 marker = "python_version < \"3.14\""
 files = [
     {file = "rtoml-0.14.0-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:ba8d2002c1f064a8ebb0c3675add6245885420bfb9fad80db5e8a665d8898bce"},
@@ -2902,7 +2902,7 @@ name = "tomli"
 version = "2.5.0"
 requires_python = ">=3.8"
 summary = "A lil' TOML parser"
-groups = ["default"]
+groups = ["default", "tests"]
 marker = "python_version == \"3.14\""
 files = [
     {file = "tomli-2.5.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:c4dc1c1781f2f716de763d1e9a7b34c6a894e167e291c7c5d16c72f7a9538545"},
@@ -3098,7 +3098,7 @@ name = "typing-inspection"
 version = "0.4.4"
 requires_python = ">=3.10"
 summary = "Runtime typing introspection tools"
-groups = ["default", "safety"]
+groups = ["default", "safety", "tests"]
 dependencies = [
     "typing-extensions>=4.15.0",
 ]
