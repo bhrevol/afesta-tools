@@ -76,6 +76,10 @@ includes = []
 source = "scm"
 
 [dependency-groups]
+dev = [
+    "pyupgrade>=3.21.2",
+    "nox>=2026.2.9",
+]
 coverage = [
     "coverage[toml]>=7.6.10",
 ]
@@ -86,8 +90,7 @@ docs = [
     "sphinx-click>=6.0.0",
 ]
 lint = [
-    "pre-commit>=4.1.0",
-    "pyupgrade>=3.19.1",
+    "pre-commit>=4.5.1",
 ]
 mypy = [
     "mypy>=1.14.1",
