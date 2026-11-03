@@ -96,9 +96,6 @@ mypy = [
     "mypy>=1.14.1",
     "types-lxml>=2025.3.30",
 ]
-safety = [
-    "safety>=3.2.14",
-]
 tests = [
     "pytest>=8.3.4",
     "pygments>=2.19.1",

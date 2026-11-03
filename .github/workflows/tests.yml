@@ -15,7 +15,6 @@ jobs:
       matrix:
         include:
           - { python: "3.15", os: "ubuntu-latest", session: "pre-commit" }
-          - { python: "3.15", os: "ubuntu-latest", session: "safety" }
           - { python: "3.15", os: "ubuntu-latest", session: "mypy" }
           - { python: "3.15", os: "ubuntu-latest", session: "tests" }
           - { python: "3.15", os: "windows-latest", session: "tests" }
@@ -150,3 +149,33 @@ jobs:
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v5.5.0
+
+  pip-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.15"
+
+      - name: Upgrade pip
+        run: |
+          pip install --constraint=${{ github.workspace }}/.github/workflows/constraints.txt pip
+          pip --version
+
+      - name: Install PDM
+        run: |
+          pipx install --pip-args=--constraint=${{ github.workspace }}/.github/workflows/constraints.txt pdm
+          pdm --version
+
+      - name: Generate production requirements.txt
+        run: |
+          pdm export -o requirements.txt --without-hashes --prod
+
+      - name: Run pip-audit
+        uses: pypa/gh-action-pip-audit@v1.1.0
+        with:
+          inputs: requirements.txt
