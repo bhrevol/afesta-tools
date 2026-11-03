@@ -52,7 +52,7 @@ class ChapterControl:
         scenes = [Scene.from_xml(scene) for scene in e.iterfind(".//scene")]
         return cls(scenes=scenes)
 
-    async def dump_ffmetadata(self, f: TextIO, absolute=True) -> None:
+    async def dump_ffmetadata(self, f: TextIO, absolute: bool = True) -> None:
         lines = [";FFMETADATA1"]
         if absolute:
             scenes = await self.absolute_scenes()

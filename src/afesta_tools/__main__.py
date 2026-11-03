@@ -76,8 +76,8 @@ def login(username: str | None, password: str | None, force: bool) -> int:  # no
     if not password:
         password = click.prompt("Afesta password", hide_input=True)
     try:
-        username = cast(str, username)
-        password = cast(str, password)
+        username = username
+        password = password
         creds = asyncio.run(_login(username, password))
         dump_credentials(creds)
         click.echo(f"Logged into Afesta as {creds.uid}")
