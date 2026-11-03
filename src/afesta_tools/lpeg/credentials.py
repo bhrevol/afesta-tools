@@ -1,4 +1,5 @@
 """LPEG API credentials."""
+
 import hashlib
 import os
 import platform

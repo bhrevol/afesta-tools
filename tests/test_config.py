@@ -1,4 +1,5 @@
 """Tests for the config module."""
+
 import json
 from dataclasses import asdict
 from pathlib import Path

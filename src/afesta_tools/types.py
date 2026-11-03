@@ -1,4 +1,5 @@
 """Type definitions."""
+
 import os
 from typing import Union
 

@@ -1,4 +1,5 @@
 """Test cases for LPEG credentials module."""
+
 import io
 from typing import Any
 

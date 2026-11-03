@@ -1,4 +1,5 @@
 """LPEG API client."""
+
 import asyncio
 import enum
 import html

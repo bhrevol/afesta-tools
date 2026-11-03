@@ -1,4 +1,5 @@
 """Afesta Tools config module."""
+
 import json
 import os
 from dataclasses import asdict
