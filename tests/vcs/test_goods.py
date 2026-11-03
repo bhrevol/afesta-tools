@@ -1,4 +1,5 @@
 """Tests for the VCS goods module."""
+
 from typing import TypeVar
 
 import pytest

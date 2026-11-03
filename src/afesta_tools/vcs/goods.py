@@ -1,4 +1,5 @@
 """VCS interlocking goods module."""
+
 import enum
 import io
 from typing import Literal

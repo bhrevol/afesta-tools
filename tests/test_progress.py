@@ -1,4 +1,5 @@
 """Test cases for the progress module."""
+
 from collections.abc import Generator
 
 import pytest

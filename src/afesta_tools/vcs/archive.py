@@ -1,4 +1,5 @@
 """VCZ (zip-compressed VCS) archive module."""
+
 import os
 import threading
 import zipfile

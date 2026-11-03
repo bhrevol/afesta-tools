@@ -1,4 +1,5 @@
 """Test cases for the __main__ module."""
+
 from pathlib import Path
 from unittest.mock import ANY
 from unittest.mock import call
@@ -34,7 +35,7 @@ def test_main_succeeds(runner: CliRunner) -> None:
         (None, "username\npassword\n"),
         (["-u", "username"], "password\n"),
         (["-p", "password"], "username\n"),
-        (["-u" "username", "-p", "password"], None),
+        (["-u", "username", "-p", "password"], None),
     ],
 )
 def test_login(

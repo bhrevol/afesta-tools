@@ -1,4 +1,5 @@
 """Test cases for LPEG client module."""
+
 import os
 from pathlib import Path
 from collections.abc import AsyncGenerator

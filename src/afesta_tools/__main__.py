@@ -1,4 +1,5 @@
 """Command-line interface."""
+
 import asyncio
 import os
 from contextlib import aclosing

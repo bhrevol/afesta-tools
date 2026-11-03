@@ -1,4 +1,5 @@
 """Tests for the VCS archive module."""
+
 from collections.abc import AsyncGenerator
 from typing import cast
 from unittest.mock import MagicMock
