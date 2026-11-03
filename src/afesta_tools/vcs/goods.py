@@ -3,7 +3,6 @@ import enum
 import io
 from typing import Literal
 from typing import Union
-from typing import cast
 
 from a10sa_script.script import FunscriptScript
 from a10sa_script.script import VCSXCycloneScript
@@ -58,11 +57,11 @@ def load_script(typ: GoodsType, data: bytes) -> GoodsScript:
     """
     with io.BytesIO(data) as f:
         if typ == GoodsType.CYCLONE:
-            return cast(VCSXCycloneScript, VCSXCycloneScript.load(f))
+            return VCSXCycloneScript.load(f)
         if typ == GoodsType.PISTON:
-            return cast(VCSXPistonScript, VCSXPistonScript.load(f))
+            return VCSXPistonScript.load(f)
         if typ == GoodsType.ONARHYTHM:
-            return cast(VCSXOnaRhythmScript, VCSXOnaRhythmScript.load(f))
+            return VCSXOnaRhythmScript.load(f)
     raise ValueError("Invalid goods type")
 
 

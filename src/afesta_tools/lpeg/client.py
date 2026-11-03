@@ -216,7 +216,7 @@ def require_auth(coroutine: Callable[..., Awaitable[Any]]) -> Any:
         AuthenticationError: Auth credentials are unavailable.
     """
 
-    @wraps(coroutine)  # type: ignore[misc]
+    @wraps(coroutine)  # type: ignore[untyped-decorator]
     async def wrapper(obj: "BaseLpegClient", *args: Any, **kwargs: Any) -> Any:
         if not obj.creds:
             raise AuthenticationError(
