@@ -2,7 +2,7 @@
 authors = [
     {name = "byeonhyeok", email = "bhrevol@gmail.com"},
 ]
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.11,<4.0"
 dependencies = [
     "click>=8.1.8",
