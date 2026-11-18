@@ -929,23 +929,23 @@ files = [
 
 [[package]]
 name = "fake-winreg"
-version = "1.10.4"
+version = "1.10.5"
 requires_python = ">=3.10"
 summary = "A fake Windows registry for testing registry-related code on non-Windows platforms"
 groups = ["default", "tests"]
 dependencies = [
-    "click>=8.5.0",
-    "lib-cli-exit-tools>=2.4.1",
-    "lib-layered-config>=7.7.0",
-    "lib-log-rich>=8.2.0",
+    "click>=8.5.1",
+    "lib-cli-exit-tools>=2.5.0",
+    "lib-layered-config>=8.1.0",
+    "lib-log-rich>=8.2.2",
     "orjson>=3.13.0",
     "pydantic>=2.14.3",
     "python-dotenv>=1.2.4",
     "rich-click>=1.9.9",
 ]
 files = [
-    {file = "fake_winreg-1.10.4-py3-none-any.whl", hash = "sha256:d148ad9f5f9fbdcbc05b653b7405b96f108013c4de76b69bbb609633632a7294"},
-    {file = "fake_winreg-1.10.4.tar.gz", hash = "sha256:ff3401557620f4f2f73a08248dd348abc667f906975c8d54b6b0643a79328bb3"},
+    {file = "fake_winreg-1.10.5-py3-none-any.whl", hash = "sha256:4648538fc0f98b87120cfa1eaf1ab6b5da7a1a4aa4bad970d64b56103d1aa8c6"},
+    {file = "fake_winreg-1.10.5.tar.gz", hash = "sha256:e41b7ef4fb6241d06f3643681945bbdbac77f8c71b9addb8da7f82a1afcf9125"},
 ]
 
 [[package]]
@@ -1176,7 +1176,7 @@ files = [
 
 [[package]]
 name = "lib-cli-exit-tools"
-version = "2.4.1"
+version = "2.5.0"
 requires_python = ">=3.10"
 summary = "CLI exit handling helpers: clean signals, exit codes, and error printing"
 groups = ["default", "tests"]
@@ -1184,31 +1184,31 @@ dependencies = [
     "rich-click>=1.9.9",
 ]
 files = [
-    {file = "lib_cli_exit_tools-2.4.1-py3-none-any.whl", hash = "sha256:54eccb9338647c4be02130afc2c8f3154ab62dcd7807597fa14c325e1f14be00"},
-    {file = "lib_cli_exit_tools-2.4.1.tar.gz", hash = "sha256:29e04fcc45667bb0996a01dd1905bf6d2bb202244d910610c8b707136d4f4df5"},
+    {file = "lib_cli_exit_tools-2.5.0-py3-none-any.whl", hash = "sha256:fbdc9a32cdc4f8c8fa2a74d953bb144b93606f087606cb8dd06b08e92e6dc1e5"},
+    {file = "lib_cli_exit_tools-2.5.0.tar.gz", hash = "sha256:601429330d328ab5af282f7676db897084d41b7e1a554877da4ed0c8258b1b42"},
 ]
 
 [[package]]
 name = "lib-layered-config"
-version = "7.7.0"
+version = "8.1.0"
 requires_python = ">=3.10"
 summary = "Cross-platform layered configuration loader for Python"
 groups = ["default", "tests"]
 dependencies = [
-    "lib-cli-exit-tools>=2.4.1",
+    "lib-cli-exit-tools>=2.5.0",
     "orjson>=3.13.0; python_version < \"3.14\"",
     "rich-click>=1.9.9",
     "rtoml>=0.14.0; python_version < \"3.14\"",
     "tomli>=2.5.0; python_version == \"3.14\"",
 ]
 files = [
-    {file = "lib_layered_config-7.7.0-py3-none-any.whl", hash = "sha256:087ff927bd24138228bfa3d601daefaca226946adc1148f5999a3d6e4ad15b80"},
-    {file = "lib_layered_config-7.7.0.tar.gz", hash = "sha256:f82c19972a5718c2f449a5690fc091828821402af8dee4012fe54a17f238c054"},
+    {file = "lib_layered_config-8.1.0-py3-none-any.whl", hash = "sha256:63ad4856dc7c5bdd3e53f190863942d1a4290b91a93d190cc26df1fec61703fb"},
+    {file = "lib_layered_config-8.1.0.tar.gz", hash = "sha256:18c4e32ecf5ead99e93037088c2b2d1eec1d9df5fc82debdcfac7e7f4f41ca35"},
 ]
 
 [[package]]
 name = "lib-log-rich"
-version = "8.2.1"
+version = "8.2.2"
 requires_python = ">=3.10"
 summary = "Rich-powered logging runtime with contextual metadata, multi-sink fan-out, and ring-buffer dumps"
 groups = ["default", "tests"]
@@ -1221,8 +1221,8 @@ dependencies = [
     "rich>=15.0.0",
 ]
 files = [
-    {file = "lib_log_rich-8.2.1-py3-none-any.whl", hash = "sha256:37beba7ebcc7d89d4dc00eb9c6b3b838dc9d7f510edcf2bdf7d304ad985b5bb6"},
-    {file = "lib_log_rich-8.2.1.tar.gz", hash = "sha256:fa91472af8f2890098a51a508f6c10f60caa1eb3e7fe502851f1aaf52a869b3c"},
+    {file = "lib_log_rich-8.2.2-py3-none-any.whl", hash = "sha256:05bcc5b44c91b5bf1219f028428c7eae11e13216eb83ee30842696fb570684c7"},
+    {file = "lib_log_rich-8.2.2.tar.gz", hash = "sha256:fc4de5dcd45ffafb677da2c1b88f9d8707b53332f47bbb4a25da9e73c6fec261"},
 ]
 
 [[package]]
